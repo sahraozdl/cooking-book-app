@@ -11,7 +11,7 @@ export default async function HomePage() {
       <h1>Home Page</h1>
       <p>Welcome to the Cooking Book App</p>
 
-      <ul className="max-w-6xl mx-auto flex flew-wrap gap-6 justify-between">
+      <ul className="max-w-6xl mx-auto flex flex-wrap gap-6 justify-between">
         {recipes &&
           //TODO:remove the next line when types are added
           //eslint-disable-next-line @typescript-eslint/no-explicit-any
