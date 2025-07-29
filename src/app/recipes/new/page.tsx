@@ -1,11 +1,11 @@
-import React from 'react'
-
+import NewRecipeForm from "./NewRecipeForm";
 const NewRecipePage = () => {
   return (
-    <div>
-      <h1 className="mx-auto max-w-6xl my-8 text-center">Create New Recipe</h1>
+    <div className="text-center my-8 max-w-6xl mx-auto">
+      <h1 className="text-2xl mb-4">Create New Recipe</h1>
+      <NewRecipeForm />
     </div>
   )
 }
 
-export default NewRecipePage
+export default NewRecipePage;
