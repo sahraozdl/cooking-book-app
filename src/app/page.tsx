@@ -1,37 +1,36 @@
-import Link from "next/link";
-import Image from "next/image";
-export default async function HomePage() {
+"use client";
 
-  const data = await fetch('https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast');
+import { useEffect, useState } from "react";
+import { getPublicRecipes } from "@/store/firebase/queries/getPublicRecipes";
+import EntryCard from "@/components/EntryCard";
+import { RecipeFormData } from "@/types/recipes";
 
-  const recipes = await data.json();
+export default function HomePage() {
+  const [recipes, setRecipes] = useState<RecipeFormData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPublicRecipes().then((data) => {
+      setRecipes(data);
+      setLoading(false);
+    });
+  }, []);
 
   return (
-    <div className="text-center my-8">
-      <h1>Home Page</h1>
-      <p>Welcome to the Cooking Book App</p>
+    <div className="max-w-3xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">🍳 Community Recipes</h1>
 
-      <ul className="max-w-6xl mx-auto flex flex-wrap gap-6 justify-between">
-        {recipes &&
-          //TODO:remove the next line when types are added
-          //eslint-disable-next-line @typescript-eslint/no-explicit-any
-          recipes.meals.map((recipe: any) => {
-            return (
-              <li key={recipe.idMeal} className="max-w-3xs my-4">
-                <Link href={`/recipes/${recipe.idMeal}`}>
-                  <h2>{recipe.strMeal}</h2>
-                  <Image 
-                  src={recipe.strMealThumb} 
-                  alt={recipe.strMeal}
-                  width={300}
-                  height={300}
-                  />
-                  </Link>
-              </li>
-            )
-          }
-          )}
-      </ul>
+      {loading ? (
+        <p>Loading recipes...</p>
+      ) : recipes.length === 0 ? (
+        <p>No public recipes found.</p>
+      ) : (
+        <div className="space-y-4">
+          {recipes.map((entry) => (
+            <EntryCard key={entry.idMeal} entry={entry} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

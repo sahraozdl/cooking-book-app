@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ProtectedRoute from "./ProtectedRoute";
 export const Navbar = () => {
   return (
     <nav className="bg-gray-800 p-4">
@@ -11,14 +12,28 @@ export const Navbar = () => {
             </Link>
           </li>
           <li>
+            <ProtectedRoute>
             <Link href="/recipes/new" className="text-white hover:underline">
               New Recipe
             </Link>
+            </ProtectedRoute>
           </li>
           <li>
             <Link href="/recipes/categories" className="text-white hover:underline">
               Categories
             </Link>
+          </li>
+          <li>
+            <Link href="/login" className="text-white hover:underline">
+              Login
+            </Link>
+          </li>
+           <li>
+            <ProtectedRoute>
+            <Link href="/profile" className="text-white hover:underline">
+              Profile
+            </Link>
+            </ProtectedRoute>
           </li>
         </ul>
       </div>

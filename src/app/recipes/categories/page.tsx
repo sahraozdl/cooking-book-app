@@ -1,23 +1,36 @@
 "use client";
-import Link from "next/link";
+
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/store/firebase/config";
 import Image from "next/image";
-import {useEffect, useState} from "react";
+import Link from "next/link";
+import { Category } from "@/types/recipes";
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function fetchCategories(){
-      const response = await fetch(
-        "https://www.themealdb.com/api/json/v1/1/categories.php"
-      );
-      const data = await response.json();
-      setCategories(data.categories);
-    };
+    async function fetchCategoriesFromFirestore() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "categories"));
+        const categoryList: Category[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Category[];
 
-    fetchCategories();
+        categoryList.sort(
+          (a, b) => Number(a.idCategory) - Number(b.idCategory)
+        );
+
+        setCategories(categoryList);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    fetchCategoriesFromFirestore();
   }, []);
 
-  
   return (
     <div className="text-center my-8">
       <h1>Categories Page</h1>
@@ -26,7 +39,7 @@ export default function CategoriesPage() {
       <ul className="max-w-6xl mx-auto flex flex-wrap gap-6 justify-between">
         {categories &&
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          categories.map((category: any ) => {
+          categories.map((category: any) => {
             return (
               <li key={category.idCategory} className="max-w-3xs my-4">
                 <Link href={`/recipes/categories/${category.strCategory}`}>
