@@ -49,40 +49,39 @@ export default function Dropdown<T extends boolean = false>({
       <Listbox value={selected} onChange={setSelected} multiple={multiple}>
         <div className="relative">
           <ListboxButton className="border p-2 rounded bg-black w-full text-left text-white min-h-[42px] flex flex-wrap gap-2">
-  {multiple && Array.isArray(selected) && selected.length > 0 ? (
-    selected.map((item) => (
-      <span
-        key={item.id}
-        className="bg-gray-800 px-2 py-1 rounded text-sm flex items-center gap-3"
-      >
-        {item.name}
-        <span
-          role="button"
-          tabIndex={0}
-          className="text-red-400 hover:text-red-600 cursor-pointer text-2xl select-none"
-          onClick={(e) => {
-            e.stopPropagation();
-            removeItem(item.id);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              removeItem(item.id);
-            }
-          }}
-          aria-label={`Remove ${item.name}`}
-        >
-          ×
-        </span>
-      </span>
-    ))
-  ) : (
-    <span>
-      {!selected ? `Select ${label}` : (selected as Option).name}
-    </span>
-  )}
-</ListboxButton>
-
+            {multiple && Array.isArray(selected) && selected.length > 0 ? (
+              selected.map((item) => (
+                <span
+                  key={item.id}
+                  className="bg-gray-800 px-2 py-1 rounded text-sm flex items-center gap-3"
+                >
+                  {item.name}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    className="text-red-400 hover:text-red-600 cursor-pointer text-2xl select-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeItem(item.id);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        removeItem(item.id);
+                      }
+                    }}
+                    aria-label={`Remove ${item.name}`}
+                  >
+                    ×
+                  </span>
+                </span>
+              ))
+            ) : (
+              <span>
+                {!selected ? `Select ${label}` : (selected as Option).name}
+              </span>
+            )}
+          </ListboxButton>
 
           <ListboxOptions className="absolute z-10 mt-1 w-full border bg-black rounded shadow-lg max-h-40 overflow-auto text-white">
             {options.map((option) => (
@@ -114,8 +113,7 @@ export default function Dropdown<T extends boolean = false>({
         />
       ) : (
         selected && (
-          <input type="hidden" name={name} value={(selected as Option).id}
-          />
+          <input type="hidden" name={name} value={(selected as Option).id} />
         )
       )}
     </Field>

@@ -1,5 +1,6 @@
 import { doc, getDoc, writeBatch, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "@/store/firebase/config";
+
 export async function toggleRecipeLike(recipeId: string, userId: string) {
   const recipeRef = doc(db, "recipes", recipeId);
   const userRef = doc(db, "users", userId);

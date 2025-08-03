@@ -3,7 +3,7 @@ import { db } from "@/store/firebase/config";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { RecipeFormData, Category, Difficulty, Cuisine } from "@/types/recipes";
-import { getCategoriesByIds } from "@/app/actions/firestoreRecipes";
+import { getCategoriesByIds } from "@/app/actions/firestoreRecipeActions";
 
 export default async function RecipeDetailsPage({
   params,
@@ -17,13 +17,11 @@ export default async function RecipeDetailsPage({
 
   if (!snapshot.exists()) return notFound();
 
-  // 1. Fetch recipe
   const recipeRef = doc(db, "recipes", id);
   const recipeSnap = await getDoc(recipeRef);
   if (!recipeSnap.exists()) return notFound();
   const recipe = recipeSnap.data() as RecipeFormData;
 
-  // 2. Fetch difficulty doc by difficultyId
   let difficulty = null;
   if (recipe.difficultyId) {
     const difficultyRef = doc(db, "difficulties", recipe.difficultyId);
@@ -33,7 +31,6 @@ export default async function RecipeDetailsPage({
     }
   }
 
-  // 3. Fetch cuisine doc by cuisineId
   let cuisine = null;
   if (recipe.cuisineId) {
     const cuisineRef = doc(db, "cuisines", recipe.cuisineId);
@@ -43,13 +40,9 @@ export default async function RecipeDetailsPage({
     }
   }
 
-  // 4. Fetch categories - assuming recipe.categories is array of category IDs
-  console.log("recipe data:", recipe);
   let categories: Category[] = [];
   if (recipe.categories && recipe.categories.length > 0) {
-    console.log("About to call getCategoriesByIds with:", recipe.categories);
     categories = await getCategoriesByIds(recipe.categories);
-    console.log("Categories fetched:", categories);
   }
 
   return (
@@ -57,7 +50,7 @@ export default async function RecipeDetailsPage({
       <h1 className="text-2xl font-bold">{recipe.strMeal}</h1>
       {difficulty && (
         <p>
-          <strong>Difficulty:</strong> {difficulty.label} ({difficulty.avgTime})
+          <strong>Difficulty:</strong> {difficulty.name} ({difficulty.avgTime})
         </p>
       )}
 
@@ -72,7 +65,7 @@ export default async function RecipeDetailsPage({
           <strong>Categories:</strong>
           <ul>
             {categories.map((cat) => (
-              <li key={cat.idCategory}>{cat.strCategory}</li>
+              <li key={cat.id}>{cat.name}</li>
             ))}
           </ul>
         </div>
@@ -91,7 +84,6 @@ export default async function RecipeDetailsPage({
         {recipe.strInstructions}
       </p>
 
-      {/* Optional fields */}
       {recipe.ingredients && (
         <div>
           <h2 className="font-semibold mt-4">Ingredients:</h2>

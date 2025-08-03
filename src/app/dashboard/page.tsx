@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { getPublicRecipesFromFollowedUsers } from "@/app/actions/firestoreRecipes";
+import { getPublicRecipesFromFollowedUsers } from "@/app/actions/firestoreRecipeActions";
 import EntryCard from "@/components/EntryCard";
 import { useUser } from "@/components/UserContext";
 import { RecipeWithID } from "@/types/recipes";

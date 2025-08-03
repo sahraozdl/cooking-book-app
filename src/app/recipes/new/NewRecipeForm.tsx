@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
-import { saveRecipe } from "@/app/actions/firestoreRecipes";
+import { saveRecipe } from "@/app/actions/firestoreRecipeActions";
 import {
   NewRecipeFormState,
   Cuisine,
@@ -78,7 +78,7 @@ export default function NewRecipeForm() {
         const data = doc.data();
         return {
           id: doc.id,
-          name: data.strCategory,
+          name: data.name,
         };
       });
       setAvailableCategories(cats);
@@ -256,7 +256,6 @@ export default function NewRecipeForm() {
         </label>
       </div>
 
-      {/* Visibility selector */}
       <div className="mb-4">
         <label className="block font-medium mb-1">Visibility:</label>
         <select
@@ -268,7 +267,6 @@ export default function NewRecipeForm() {
         </select>
       </div>
 
-      {/* ✅ Safe usage of user data */}
       <input type="hidden" name="authorName" value={user?.name || "Unknown"} />
       <input type="hidden" name="authorId" value={user?.id || ""} />
 

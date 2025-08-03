@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
-import { signUpUser, signInUser, signInWithGoogle } from "@/store/firebase/auth";
+import {
+  signUpUser,
+  signInUser,
+  signInWithGoogle,
+} from "@/store/firebase/auth";
 import { useRouter } from "next/navigation";
-
 
 export default function AuthForm() {
   const router = useRouter();
@@ -15,14 +18,14 @@ export default function AuthForm() {
   };
 
   const handleGoogleSignIn = async () => {
-  setError("");
-  try {
-    await signInWithGoogle();
-    router.push("/dashboard");
-  } catch (err) {
-    setError("Google Sign-In failed. Please try again.");
-  }
-};
+    setError("");
+    try {
+      await signInWithGoogle();
+      router.push("/dashboard");
+    } catch (err) {
+      setError("Google Sign-In failed. Please try again.");
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -53,7 +56,7 @@ export default function AuthForm() {
     }
   };
 
- return (
+  return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-10 relative z-10 w-full max-w-md mx-auto">
         <form onSubmit={handleSubmit} className="text-black">
@@ -118,12 +121,12 @@ export default function AuthForm() {
           </p>
 
           <button
-  type="button"
-  onClick={handleGoogleSignIn}
-  className="w-full py-2 bg-red-600 text-white rounded mb-4"
->
-  Continue with Google
-</button>
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="w-full py-2 bg-red-600 text-white rounded mb-4"
+          >
+            Continue with Google
+          </button>
         </form>
       </div>
     </div>

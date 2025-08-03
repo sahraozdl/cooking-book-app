@@ -2,6 +2,7 @@ import { addDoc, serverTimestamp, doc, getDoc, updateDoc } from "firebase/firest
 import { db, recipesCollectionRef } from "@/store/firebase/config";
 import { recipeSchema } from "./schema";
 import { UserTypes, NewRecipeFormState } from "@/types/recipes";
+
 export async function saveRecipe(prevState: NewRecipeFormState | null, formData: FormData) {
   try {
     const ingredients: { strIngredient: string; strMeasure: string }[] = [];
@@ -74,7 +75,7 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
       inputs: validateData.data,
     };
   } catch (error) {
-    console.error("🔥 Error saving recipe:", error);
+    console.error("Error saving recipe:", error);
     return {
       success: false,
       message: "Failed to save recipe. Please try again.",

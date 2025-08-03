@@ -4,12 +4,6 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-export default function Layout({
-  children,
-}: LayoutProps) {
-  return (
-    <div>
-      {children}
-    </div>
-  );
+export default function Layout({ children }: LayoutProps) {
+  return <div>{children}</div>;
 }

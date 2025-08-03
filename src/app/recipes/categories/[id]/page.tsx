@@ -6,11 +6,11 @@ import EntryCard from "@/components/EntryCard";
 interface CategoryRecipesPageProps {
   params: { id: string };
 }
+export default async function CategoryRecipesPage({
+  params,
+}: CategoryRecipesPageProps) {
+  const { id: categoryId } = await params;
 
-export default async function CategoryRecipesPage({ params }: CategoryRecipesPageProps) {
-  const { id: categoryId } = params;
-
-  // Query recipes where categories array contains this categoryId
   const recipesQuery = query(
     collection(db, "recipes"),
     where("categories", "array-contains", categoryId)
@@ -18,7 +18,7 @@ export default async function CategoryRecipesPage({ params }: CategoryRecipesPag
 
   const querySnapshot = await getDocs(recipesQuery);
 
-  const recipes: RecipeWithID[] = querySnapshot.docs.map(doc => ({
+  const recipes: RecipeWithID[] = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<RecipeWithID, "id">),
   }));

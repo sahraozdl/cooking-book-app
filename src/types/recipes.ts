@@ -4,7 +4,7 @@ export interface NewRecipeFormState {
   errors?: {
     [K in keyof RecipeFormData]?: string[];
   };
-  inputs?:Partial<RecipeFormData>;
+  inputs?: Partial<RecipeFormData>;
 }
 
 export interface Ingredient {
@@ -39,26 +39,26 @@ export interface RecipeWithID extends RecipeFormData {
 }
 
 export interface Category {
-  idCategory: string;
-  strCategory: string;
-  strCategoryDescription: string;
-  strCategoryThumb: string;
+  id: string;
+  name?: string;
+  strCategoryDescription?: string;
+  strCategoryThumb?: string;
 }
 
 export interface Cuisine {
   id: string;
-  name: string;
-  region: string;
+  name?: string;
+  region?: string;
 }
 
 export interface Difficulty {
   id: string;
-  avgTime: string;
-  label: string;
+  avgTime?: string;
+  name?: string;
 }
 export interface Option {
   id: string;
-  name: string;
+  name?: string;
 }
 
 export interface SearchUser {
@@ -66,7 +66,7 @@ export interface SearchUser {
   name?: string;
   email?: string;
   photoURL?: string;
-} 
+}
 
 export interface UserTypes {
   id?: string;

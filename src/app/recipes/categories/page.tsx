@@ -17,9 +17,7 @@ export default function CategoriesPage() {
           ...doc.data(),
         })) as Category[];
 
-        categoryList.sort(
-          (a, b) => Number(a.idCategory) - Number(b.idCategory)
-        );
+        categoryList.sort((a, b) => Number(a.id) - Number(b.id));
 
         setCategories(categoryList);
       } catch (error) {
@@ -40,12 +38,12 @@ export default function CategoriesPage() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           categories.map((category: any) => {
             return (
-              <li key={category.idCategory} className="max-w-3xs my-4">
-                <Link href={`/recipes/categories/${category.idCategory}`}>
-                  <h2>{category.strCategory}</h2>
+              <li key={category.id} className="max-w-3xs my-4">
+                <Link href={`/recipes/categories/${category.id}`}>
+                  <h2>{category.name}</h2>
                   <Image
                     src={category.strCategoryThumb}
-                    alt={category.strCategory}
+                    alt={category.name}
                     width={300}
                     height={300}
                   />

@@ -1,9 +1,4 @@
-import {
-  Field,
-  Input,
-  Label,
-  Textarea,
-} from "@headlessui/react";
+import { Field, Input, Label, Textarea } from "@headlessui/react";
 
 function Textfield({
   label,
@@ -34,8 +29,10 @@ function Textfield({
           placeholder={placeholder}
           aria-describedby={`${id}-error`}
           defaultValue={defaultValue}
-          className={`border rounded p-2 ${error ? "border-red-500" : "border-gray-300"}`}
-          rows={5} // or any default rows you want
+          className={`border rounded p-2 ${
+            error ? "border-red-500" : "border-gray-300"
+          }`}
+          rows={5}
         />
       ) : (
         <Input
@@ -45,7 +42,9 @@ function Textfield({
           placeholder={placeholder}
           aria-describedby={`${id}-error`}
           defaultValue={defaultValue}
-          className={`border rounded p-2 ${error ? "border-red-500" : "border-gray-300"}`}
+          className={`border rounded p-2 ${
+            error ? "border-red-500" : "border-gray-300"
+          }`}
         />
       )}
       {error && (

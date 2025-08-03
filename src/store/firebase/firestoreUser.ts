@@ -1,8 +1,14 @@
 import { doc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { collection, getDocs, query, where, QueryDocumentSnapshot, DocumentData, getDoc, writeBatch } from "firebase/firestore";
+import { collection, getDocs, query, where, QueryDocumentSnapshot, DocumentData, getDoc, writeBatch, updateDoc } from "firebase/firestore";
 import { db } from "./config";
 import { UserTypes } from "@/types/recipes";
 
+export async function updateProfile(userId: string, updatedData: Partial<UserTypes>) {
+  if (!userId) throw new Error("User ID is required");
+
+  const userRef = doc(db, "users", userId);
+  await updateDoc(userRef, updatedData);
+}
 
 export const followUser = async (currentUserId: string, targetUserId: string) => {
   const batch = writeBatch(db);

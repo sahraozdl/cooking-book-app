@@ -3,78 +3,85 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   toggleRecipeLike,
   toggleRecipeSave,
-} from "@/app/actions/firestoreRecipes";
-import { useUser } from "@/components/UserContext"; // adjust based on your setup
+} from "@/app/actions/firestoreRecipeActions";
+import { useUser } from "@/components/UserContext";
 import { RecipeWithID } from "@/types/recipes";
-import { useRouter } from "next/navigation";
 
 interface EntryCardProps {
   entry: RecipeWithID;
   showAuthor?: boolean;
+  editable?: boolean;
+  onDelete?: () => void;
+  onUpdate?: (updatedData: Partial<RecipeWithID>) => void;
+  isDeleting?: boolean;
 }
 
 export default function EntryCard({
   entry,
   showAuthor = true,
+  editable = false,
+  onDelete,
+  onUpdate,
+  isDeleting = false,
 }: EntryCardProps) {
-  const { user } = useUser(); // assumes you have a context with user.id
+  const { user } = useUser();
+  const router = useRouter();
+
+  const userId = user?.id;
+
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-    setLiked(user.id ? entry.likedBy?.includes(user.id) ?? false : false);
-    setSaved(user.id ? entry.savedBy?.includes(user.id) ?? false : false);
-  }, [entry, user]);
+    if (!userId) {
+      setLiked(false);
+      setSaved(false);
+      return;
+    }
+    setLiked(entry.likedBy?.includes(userId) ?? false);
+    setSaved(entry.savedBy?.includes(userId) ?? false);
+  }, [entry, userId]);
 
-  const router = useRouter();
+  const handleEdit = () => {
+    if (!entry.id) return;
+    router.push(`/recipes/edit/${entry.id}`);
+  };
 
   const handleToggle = async (type: "like" | "save") => {
-    if (!user?.id) {
+    if (!userId) {
       router.push("/login");
       return;
     }
     if (!entry.id) return;
 
-    const isLike = type === "like";
-    const toggler = isLike ? toggleRecipeLike : toggleRecipeSave;
+    const toggler = type === "like" ? toggleRecipeLike : toggleRecipeSave;
+    const currentState = type === "like" ? liked : saved;
+    const newState = !currentState;
 
     try {
-      const newState = isLike ? !liked : !saved;
+      if (type === "like") setLiked(newState);
+      else setSaved(newState);
+      const countKey = type === "like" ? "likeCount" : "saveCount";
+      const byKey = type === "like" ? "likedBy" : "savedBy";
 
-      // Optimistically update UI
-      if (isLike) {
-        setLiked(newState);
-      } else {
-        setSaved(newState);
-      }
+      entry[countKey] = Math.max(
+        (entry[countKey] ?? entry[byKey]?.length ?? 0) + (newState ? 1 : -1),
+        0
+      );
 
-      // Update count and array locally
-      if (isLike) {
-        entry.likeCount = Math.max(
-          (entry.likeCount ?? entry.likedBy?.length ?? 0) + (newState ? 1 : -1),
-          0
-        );
-      } else {
-        entry.saveCount = Math.max(
-          (entry.saveCount ?? entry.savedBy?.length ?? 0) + (newState ? 1 : -1),
-          0
-        );
-      }
+      entry[byKey] = newState
+        ? [...(entry[byKey] ?? []), userId]
+        : (entry[byKey] ?? []).filter((id) => id !== userId);
 
-      if (newState) {
-        entry[`${type}dBy`] = [...(entry[`${type}dBy`] ?? []), user.id];
-      } else {
-        entry[`${type}dBy`] =
-          entry[`${type}dBy`]?.filter((id) => id !== user.id) ?? [];
-      }
-
-      await toggler(entry.id, user.id);
+      await toggler(entry.id, userId);
     } catch (error) {
       console.error(`Failed to toggle ${type}:`, error);
+      if (type === "like") setLiked(currentState);
+      else setSaved(currentState);
     }
   };
 
@@ -107,11 +114,21 @@ export default function EntryCard({
 
           {showAuthor && entry.authorId && (
             <p className="text-sm">
-              By: {entry.isAnonymous ? "Anonymous" : entry.authorName}
+              By:{" "}
+              {entry.isAnonymous ? (
+                "Anonymous"
+              ) : (
+                <Link
+                  href={`/profile/${entry.authorId}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  {entry.authorName}
+                </Link>
+              )}
             </p>
           )}
 
-          <div className="flex gap-4 mt-2">
+          <div className="flex gap-4 mt-2 items-center">
             <button
               onClick={() => handleToggle("like")}
               className={`text-sm ${
@@ -138,6 +155,28 @@ export default function EntryCard({
             >
               View full recipe
             </Link>
+
+            {editable && (
+              <div className="flex space-x-2 ml-4">
+                <button
+                  onClick={handleEdit}
+                  className="btn btn-sm btn-primary"
+                  aria-label="Edit recipe"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={onDelete}
+                  disabled={isDeleting}
+                  className={`btn btn-sm btn-danger ${
+                    isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  aria-label="Delete recipe"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

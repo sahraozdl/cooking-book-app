@@ -3,13 +3,14 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { UserTypes } from "@/types/recipes";
 import { doc, getDoc } from "firebase/firestore";
-import { db,auth } from "@/store/firebase/config";
+import { db, auth } from "@/store/firebase/config";
 
 interface IUserContext {
   user: UserTypes | null;
   loading: boolean;
   errors: UserTypes["errors"] | null;
   setError: React.Dispatch<React.SetStateAction<UserTypes["errors"] | null>>;
+  setUser: React.Dispatch<React.SetStateAction<UserTypes | null>>;
 }
 
 const UserContext = createContext<IUserContext>({
@@ -17,6 +18,7 @@ const UserContext = createContext<IUserContext>({
   loading: true,
   errors: null,
   setError: () => {},
+  setUser: () => {},
 });
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -64,7 +66,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, errors, setError }}>
+    <UserContext.Provider value={{ user, loading, errors, setError, setUser }}>
       {children}
     </UserContext.Provider>
   );
