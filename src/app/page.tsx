@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPublicRecipes } from "@/store/firebase/queries/getPublicRecipes";
+import { getPublicRecipes } from "@/app/actions/firestoreRecipes";
 import EntryCard from "@/components/EntryCard";
-import { RecipeFormData } from "@/types/recipes";
+import { RecipeWithID } from "@/types/recipes";
 
 export default function HomePage() {
-  const [recipes, setRecipes] = useState<RecipeFormData[]>([]);
+  const [recipes, setRecipes] = useState<RecipeWithID[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function HomePage() {
       ) : (
         <div className="space-y-4">
           {recipes.map((entry) => (
-            <EntryCard key={entry.idMeal} entry={entry} />
+            <EntryCard key={entry.id} entry={entry} />
           ))}
         </div>
       )}

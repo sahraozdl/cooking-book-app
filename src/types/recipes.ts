@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface NewRecipeFormState {
   success: boolean;
   message: string;
@@ -13,26 +12,33 @@ export interface Ingredient {
   strMeasure: string;
 }
 export interface RecipeFormData {
-  idMeal?: string;
-  strCategory: string[];
+  categories: string[];
   cuisineId?: string;
   strMeal: string;
   strInstructions: string;
   strMealThumb: string;
   difficultyId?: string;
-  strIngredient: Ingredient[];
+  ingredients: Ingredient[];
   servingsId: string;
   authorId: string;
   authorName?: string;
   isAnonymous?: boolean;
+  likedBy?: string[];
+  savedBy?: string[];
+  likeCount?: number;
+  saveCount?: number;
   visibility: "public" | "private";
   createdAt: {
     seconds: number;
     nanoseconds: number;
   };
 }
-export interface Category {
+
+export interface RecipeWithID extends RecipeFormData {
   id: string;
+}
+
+export interface Category {
   idCategory: string;
   strCategory: string;
   strCategoryDescription: string;
@@ -73,6 +79,8 @@ export interface UserTypes {
   following?: string[];
   followers?: string[];
   writesCount?: number;
+  savedRecipes?: string[];  // ✅
+  likedRecipes?: string[];  // ✅
   errors?: {
     name?: string[];
     email?: string[];

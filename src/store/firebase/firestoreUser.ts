@@ -1,20 +1,29 @@
-import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { collection, getDocs, query, where, QueryDocumentSnapshot, DocumentData, orderBy, getDoc } from "firebase/firestore";
+import { doc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, getDocs, query, where, QueryDocumentSnapshot, DocumentData, getDoc, writeBatch } from "firebase/firestore";
 import { db } from "./config";
-import { RecipeFormData } from "@/types/recipes";
 import { UserTypes } from "@/types/recipes";
 
+
 export const followUser = async (currentUserId: string, targetUserId: string) => {
+  const batch = writeBatch(db);
   const currentRef = doc(db, "users", currentUserId);
-  await updateDoc(currentRef, {
-    following: arrayUnion(targetUserId),
-  });
+  const targetRef = doc(db, "users", targetUserId);
+
+  batch.update(currentRef, { following: arrayUnion(targetUserId) });
+  batch.update(targetRef, { followers: arrayUnion(currentUserId) });
+
+  await batch.commit();
 };
+
 export const unfollowUser = async (currentUserId: string, targetUserId: string) => {
+  const batch = writeBatch(db);
   const currentRef = doc(db, "users", currentUserId);
-  await updateDoc(currentRef, {
-    following: arrayRemove(targetUserId),
-  });
+  const targetRef = doc(db, "users", targetUserId);
+
+  batch.update(currentRef, { following: arrayRemove(targetUserId) });
+  batch.update(targetRef, { followers: arrayRemove(currentUserId) });
+
+  await batch.commit();
 };
 
 export async function getUserFollowers(userId: string) {
@@ -66,30 +75,4 @@ export async function getUserById(userId: string) {
     return { id: docSnap.id, ...docSnap.data() };
   }
   return null;
-}
-
-export async function getUserEntries(userId: string, visibility?: "public" | "private"): Promise<RecipeFormData[]> {
-  let q;
-
-  if (visibility) {
-    q = query(
-      collection(db, "entries"),
-      where("authorId", "==", userId),
-      where("visibility", "==", visibility),
-      orderBy("createdAt", "desc")
-    );
-  } else {
-    q = query(
-      collection(db, "entries"),
-      where("authorId", "==", userId),
-      orderBy("createdAt", "desc")
-    );
-  }
-
-  const snapshot = await getDocs(q);
-
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...(doc.data() as Omit<RecipeFormData, "id">),
-  }));
 }

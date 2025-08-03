@@ -1,8 +1,7 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useActionState } from "react";
-import { saveRecipe } from "@/app/actions/recipes";
+import { saveRecipe } from "@/app/actions/firestoreRecipes";
 import {
   NewRecipeFormState,
   Cuisine,
@@ -21,11 +20,11 @@ const initialState: NewRecipeFormState = {
 };
 
 export const servingsOptions = [
-  { id: "1", name: "1-2" },
-  { id: "2", name: "3-4 " },
-  { id: "3", name: "5-8" },
-  { id: "4", name: "8-12" },
-  { id: "5", name: "12+" },
+  { id: "1-2", name: "1-2" },
+  { id: "3-4", name: "3-4" },
+  { id: "5-8", name: "5-8" },
+  { id: "8-12", name: "8-12" },
+  { id: "12+", name: "12+" },
 ];
 
 export default function NewRecipeForm() {
@@ -169,11 +168,7 @@ export default function NewRecipeForm() {
         setSelected={setSelectedCuisine}
         name="cuisine"
       />
-      <input
-        type="hidden"
-        name="cuisineId"
-        value={selectedCuisine?.id || ""}
-      />
+      <input type="hidden" name="cuisineId" value={selectedCuisine?.id || ""} />
 
       <Dropdown
         label="Cooking Time (minutes)"
@@ -230,7 +225,7 @@ export default function NewRecipeForm() {
                 updateIngredient(i, "strMeasure", e.target.value)
               }
               className="border rounded px-2 py-1 w-24"
-              name={`strIngredient[${i}][strMeasure]`}
+              name={`ingredients[${i}][strMeasure]`}
             />
             {ingredients.length > 1 && (
               <button
