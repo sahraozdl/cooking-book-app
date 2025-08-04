@@ -9,11 +9,11 @@ interface CategoryRecipesPageProps {
 export default async function CategoryRecipesPage({
   params,
 }: CategoryRecipesPageProps) {
-  const { id: categoryId } = await params;
+  const { id: categoryId } =params;
 
   const recipesQuery = query(
     collection(db, "recipes"),
-    where("categories", "array-contains", categoryId)
+    where("categoryIds", "array-contains", categoryId)
   );
 
   const querySnapshot = await getDocs(recipesQuery);

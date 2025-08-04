@@ -9,7 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { auth } from "@/store/firebase/config";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { signOutUser } from "@/store/firebase/auth";
-import { Category, Cuisine, Difficulty } from "@/types/recipes";
+import { Category, Cuisine, Difficulty,Serving } from "@/types/recipes";
 import ProtectedContent from "./ProtectedContent";
 
 export const Navbar = () => {
@@ -20,8 +20,7 @@ export const Navbar = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
   const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [servings, setServings] = useState<any[]>([]);
+  const [servings, setServings] = useState<Serving[]>([]);
 
   const excludedPaths = [
     "/profile",

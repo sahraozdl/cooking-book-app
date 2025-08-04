@@ -11,7 +11,6 @@ import {
 import { Fragment } from "react";
 
 export type Option = { id: string; name: string };
-
 type DropdownProps<T extends boolean = false> = {
   label: string;
   options: Option[];
@@ -84,19 +83,20 @@ export default function Dropdown<T extends boolean = false>({
           </ListboxButton>
 
           <ListboxOptions className="absolute z-10 mt-1 w-full border bg-black rounded shadow-lg max-h-40 overflow-auto text-white">
-            {options.map((option) => (
-              <ListboxOption key={option.id} value={option} as={Fragment}>
-                {({ active }) => (
-                  <li
-                    className={`cursor-pointer px-4 py-2 ${
-                      isSelected(option) ? "bg-blue-900 font-semibold" : ""
-                    } ${active ? "bg-gray-900" : ""}`}
-                  >
-                    {option.name}
-                  </li>
-                )}
-              </ListboxOption>
-            ))}
+            {options.map((option) =>  (
+                <ListboxOption key={option.id} value={option} as={Fragment}>
+                  {({ active }) => (
+                    <li
+                      className={`cursor-pointer px-4 py-2 ${
+                        isSelected(option) ? "bg-blue-900 font-semibold" : ""
+                      } ${active ? "bg-gray-900" : ""}`}
+                    >
+                      {option.name}
+                    </li>
+                  )}
+                </ListboxOption>
+              ))
+            }
           </ListboxOptions>
         </div>
       </Listbox>

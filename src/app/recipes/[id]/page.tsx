@@ -1,53 +1,66 @@
-import { getDoc, doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/store/firebase/config";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { RecipeFormData, Category, Difficulty, Cuisine } from "@/types/recipes";
+import { Category, Cuisine, Difficulty, RecipeWithID } from "@/types/recipes";
 import { getCategoriesByIds } from "@/app/actions/firestoreRecipeActions";
 
 export default async function RecipeDetailsPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+params: { id: string };
 }) {
-  const { id } = await params;
+const { id } = await params;
 
-  const docRef = doc(db, "recipes", id);
-  const snapshot = await getDoc(docRef);
-
-  if (!snapshot.exists()) return notFound();
-
+  // Fetch main recipe
   const recipeRef = doc(db, "recipes", id);
   const recipeSnap = await getDoc(recipeRef);
   if (!recipeSnap.exists()) return notFound();
-  const recipe = recipeSnap.data() as RecipeFormData;
 
-  let difficulty = null;
-  if (recipe.difficultyId) {
-    const difficultyRef = doc(db, "difficulties", recipe.difficultyId);
-    const difficultySnap = await getDoc(difficultyRef);
-    if (difficultySnap.exists()) {
-      difficulty = difficultySnap.data() as Difficulty;
-    }
-  }
+  const recipe = {
+    id: recipeSnap.id,
+    ...recipeSnap.data(),
+  } as RecipeWithID;
 
-  let cuisine = null;
-  if (recipe.cuisineId) {
-    const cuisineRef = doc(db, "cuisines", recipe.cuisineId);
-    const cuisineSnap = await getDoc(cuisineRef);
-    if (cuisineSnap.exists()) {
-      cuisine = cuisineSnap.data() as Cuisine;
-    }
-  }
+  // Fetch difficulty (if present)
+let difficulty: Difficulty | null = null;
+const difficultyId = typeof recipe.difficultyId === "string"
+  ? recipe.difficultyId
+  : recipe.difficultyId?.id; // or undefined
 
-  let categories: Category[] = [];
-  if (recipe.categories && recipe.categories.length > 0) {
-    categories = await getCategoriesByIds(recipe.categories);
+if (difficultyId) {
+  const snap = await getDoc(doc(db, "difficulties", difficultyId));
+  if (snap.exists()) {
+    difficulty = { id: snap.id, ...snap.data() } as Difficulty;
   }
+}
+
+// Fetch cuisine
+let cuisine: Cuisine | null = null;
+const cuisineId = typeof recipe.cuisineId === "string"
+  ? recipe.cuisineId
+  : recipe.cuisineId?.id;
+
+if (cuisineId) {
+  const snap = await getDoc(doc(db, "cuisines", cuisineId));
+  if (snap.exists()) {
+    cuisine = { id: snap.id, ...snap.data() } as Cuisine;
+  }
+}
+
+// Fetch categories
+let categories: Category[] = [];
+if (recipe.categories?.length) {
+  const categoryIds = recipe.categories.map((cat: Category) =>
+    typeof cat === "string" ? cat : cat.id
+  );
+  categories = await getCategoriesByIds(categoryIds);
+}
 
   return (
     <div className="p-4 max-w-3xl mx-auto space-y-4">
       <h1 className="text-2xl font-bold">{recipe.strMeal}</h1>
+
       {difficulty && (
         <p>
           <strong>Difficulty:</strong> {difficulty.name} ({difficulty.avgTime})
@@ -70,6 +83,7 @@ export default async function RecipeDetailsPage({
           </ul>
         </div>
       )}
+
       {recipe.strMealThumb && (
         <Image
           src={recipe.strMealThumb}
@@ -84,11 +98,11 @@ export default async function RecipeDetailsPage({
         {recipe.strInstructions}
       </p>
 
-      {recipe.ingredients && (
+      {recipe.ingredients?.length > 0 && (
         <div>
           <h2 className="font-semibold mt-4">Ingredients:</h2>
           <ul>
-            {recipe.ingredients?.map((ing, idx) => (
+            {recipe.ingredients.map((ing, idx) => (
               <li key={idx}>
                 {ing.strIngredient} — {ing.strMeasure}
               </li>

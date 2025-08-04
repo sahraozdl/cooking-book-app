@@ -38,7 +38,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser({
             id: firebaseUser.uid,
             email: firebaseUser.email ?? undefined,
-            name: firebaseUser.displayName ?? undefined,
+            name: userData.name ?? firebaseUser.displayName ?? undefined,
             photoURL: firebaseUser.photoURL ?? undefined,
             createdAt: userData.createdAt?.toDate() ?? undefined,
             writes: userData.writes ?? [],

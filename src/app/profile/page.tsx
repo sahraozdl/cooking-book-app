@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from "@/components/UserContext";
-import { UserTypes, RecipeWithID } from "@/types/recipes";
+import { RecipeWithID } from "@/types/recipes";
 import {
   getPublicRecipes,
   deleteRecipe,
-  updateRecipe,
 } from "@/app/actions/firestoreRecipeActions";
-import EditProfileModal from "@/components/EditProfileModal";
+import EditModal from "@/components/EditModal";
 import EntryCard from "@/components/EntryCard";
+import ProfileForm from "@/components/forms/ProfileForm";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -53,23 +53,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleUpdate = async (
-    recipeId: string,
-    updatedData: Partial<RecipeWithID>
-  ) => {
-    if (!user?.id) return;
-    try {
-      await updateRecipe(recipeId, updatedData);
-      setRecipes((prev) =>
-        prev.map((recipe) =>
-          recipe.id === recipeId ? { ...recipe, ...updatedData } : recipe
-        )
-      );
-    } catch (error) {
-      console.error("Failed to update recipe:", error);
-      alert("Failed to update recipe. Please try again.");
-    }
-  };
+  
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -82,11 +66,13 @@ export default function ProfilePage() {
 
       <p className="text-gray-500">{user.email}</p>
 
-      <EditProfileModal
+      <EditModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        user={user as UserTypes}
-      />
+        title="Edit Profile"
+      >
+        <ProfileForm user={user} onClose={() => setShowModal(false)} />
+      </EditModal>
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold">Your Recipes</h2>
@@ -101,7 +87,6 @@ export default function ProfilePage() {
               entry={recipe}
               editable
               onDelete={() => handleDelete(recipe.id)}
-              onUpdate={(updatedData) => handleUpdate(recipe.id, updatedData)}
               isDeleting={deletingId === recipe.id}
             />
           ))

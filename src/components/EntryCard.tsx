@@ -10,6 +10,8 @@ import {
 } from "@/app/actions/firestoreRecipeActions";
 import { useUser } from "@/components/UserContext";
 import { RecipeWithID } from "@/types/recipes";
+import EditModal from "@/components/EditModal";
+import NewRecipeForm from "@/components/forms/NewRecipeForm";
 
 interface EntryCardProps {
   entry: RecipeWithID;
@@ -25,7 +27,6 @@ export default function EntryCard({
   showAuthor = true,
   editable = false,
   onDelete,
-  onUpdate,
   isDeleting = false,
 }: EntryCardProps) {
   const { user } = useUser();
@@ -35,6 +36,7 @@ export default function EntryCard({
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (!userId) {
@@ -45,11 +47,6 @@ export default function EntryCard({
     setLiked(entry.likedBy?.includes(userId) ?? false);
     setSaved(entry.savedBy?.includes(userId) ?? false);
   }, [entry, userId]);
-
-  const handleEdit = () => {
-    if (!entry.id) return;
-    router.push(`/recipes/edit/${entry.id}`);
-  };
 
   const handleToggle = async (type: "like" | "save") => {
     if (!userId) {
@@ -65,6 +62,7 @@ export default function EntryCard({
     try {
       if (type === "like") setLiked(newState);
       else setSaved(newState);
+
       const countKey = type === "like" ? "likeCount" : "saveCount";
       const byKey = type === "like" ? "likedBy" : "savedBy";
 
@@ -107,9 +105,9 @@ export default function EntryCard({
           </p>
 
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-x-2">
-            <span>🍽️ Servings: {entry.servingsId}</span>
-            <span>🌶️ Difficulty: {entry.difficultyId}</span>
-            <span>🌍 Cuisine: {entry.cuisineId}</span>
+            <span>🍽️ Servings: {entry.servingsId?.name}</span>
+            <span>🌶️ Difficulty: {entry.difficultyId?.name}</span>
+            <span>🌍 Cuisine: {entry.cuisineId?.name}</span>
           </div>
 
           {showAuthor && entry.authorId && (
@@ -159,12 +157,13 @@ export default function EntryCard({
             {editable && (
               <div className="flex space-x-2 ml-4">
                 <button
-                  onClick={handleEdit}
+                  onClick={() => setShowEditModal(true)}
                   className="btn btn-sm btn-primary"
                   aria-label="Edit recipe"
                 >
                   Edit
                 </button>
+
                 <button
                   onClick={onDelete}
                   disabled={isDeleting}
@@ -180,6 +179,19 @@ export default function EntryCard({
           </div>
         </div>
       </div>
+
+      {editable && (
+        <EditModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          title="Edit Recipe"
+        >
+          <NewRecipeForm
+            recipe={entry}
+            onClose={() => setShowEditModal(false)}
+            />
+        </EditModal>
+      )}
     </div>
   );
 }

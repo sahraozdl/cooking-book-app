@@ -36,12 +36,12 @@ export default function HomePage() {
       const filtered = data.filter((recipe) => {
         const matchesCuisine =
           cuisines.length === 0 ||
-          (recipe.cuisineId && cuisines.includes(recipe.cuisineId));
+          (recipe.cuisineId && cuisines.includes(recipe.cuisineId.id));
         const matchesDifficulty =
           difficulties.length === 0 ||
-          (recipe.difficultyId && difficulties.includes(recipe.difficultyId));
+          (recipe.difficultyId && difficulties.includes(recipe.difficultyId.id));
         const matchesServings =
-          servings.length === 0 || servings.includes(recipe.servingsId);
+          servings.length === 0 || (recipe.servingsId && servings.includes(recipe.servingsId.id));
 
         return matchesCuisine && matchesDifficulty && matchesServings;
       });
@@ -67,8 +67,8 @@ export default function HomePage() {
         <p>No public recipes found.</p>
       ) : (
         <div className="space-y-4">
-          {recipes.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} />
+          {recipes.map((recipe) => (
+            <EntryCard key={recipe.id} entry={recipe} />
           ))}
         </div>
       )}

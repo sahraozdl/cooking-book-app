@@ -4,7 +4,7 @@ export interface NewRecipeFormState {
   errors?: {
     [K in keyof RecipeFormData]?: string[];
   };
-  inputs?: Partial<RecipeFormData>;
+  inputs?: Partial<RecipeWithID>;
 }
 
 export interface Ingredient {
@@ -12,14 +12,18 @@ export interface Ingredient {
   strMeasure: string;
 }
 export interface RecipeFormData {
-  categories: string[];
-  cuisineId?: string;
+  categories?: { id: string; name: string }[];
+  categoryIds?: string[];
+  cuisineId?: {
+  id: string;
+  name: string;
+};
   strMeal: string;
   strInstructions: string;
   strMealThumb: string;
-  difficultyId?: string;
+  difficultyId?: { id: string; name: string };
   ingredients: Ingredient[];
-  servingsId: string;
+ servingsId?: { id: string; name: string };
   authorId: string;
   authorName?: string;
   isAnonymous?: boolean;
@@ -56,9 +60,13 @@ export interface Difficulty {
   avgTime?: string;
   name?: string;
 }
+export interface Serving {
+  id: string;
+  name: string;
+}
 export interface Option {
   id: string;
-  name?: string;
+  name: string;
 }
 
 export interface SearchUser {

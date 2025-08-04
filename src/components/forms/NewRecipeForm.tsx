@@ -6,86 +6,132 @@ import {
   NewRecipeFormState,
   Cuisine,
   Difficulty,
+  Serving,
   Option,
+  RecipeWithID,
+  Category,
 } from "@/types/recipes";
 import { db, getStaticOptions } from "@/store/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 import Dropdown from "@/components/Dropdown";
 import Textfield from "@/components/Textfield";
 import { useUser } from "@/components/UserContext";
+import { useRouter } from "next/navigation";
+
 
 const initialState: NewRecipeFormState = {
   success: false,
   message: "",
 };
 
-export const servingsOptions = [
-  { id: "1-2", name: "1-2" },
-  { id: "3-4", name: "3-4" },
-  { id: "5-8", name: "5-8" },
-  { id: "8-12", name: "8-12" },
-  { id: "12+", name: "12+" },
-];
+interface NewRecipeFormProps {
+  recipe?: Partial<RecipeWithID>;
+  onSubmit?: (formData: FormData) => void;
+  onClose?: () => void;
+  submitLabel?: string;
+}
 
-export default function NewRecipeForm() {
+
+export default function NewRecipeForm({
+  recipe,
+  submitLabel = "Save Recipe",
+}: NewRecipeFormProps) {
+  const router = useRouter();
   const { user } = useUser();
-  const [state, action, isPending] = useActionState(saveRecipe, initialState);
+  const [state, action, isPending] = useActionState( saveRecipe , initialState);
 
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Option | null>(
-    null
-  );
   const [selectedCuisine, setSelectedCuisine] = useState<Option | null>(null);
+const [selectedDifficulty, setSelectedDifficulty] = useState<Option | null>(null);
+const [selectedServings, setSelectedServings] = useState<Option | null>(null);
+
+
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
 
   const [cuisines, setCuisines] = useState<Option[]>([]);
   const [difficulties, setDifficulties] = useState<Option[]>([]);
   const [availableCategories, setAvailableCategories] = useState<Option[]>([]);
+  const [servingsOptions, setAvailableServings] = useState<Option[]>([]);
 
-  const [ingredients, setIngredients] = useState<
-    { strIngredient: string; strMeasure: string }[]
-  >([{ strIngredient: "", strMeasure: "" }]);
-
-  const [selectedServings, setSelectedServings] = useState<Option | null>(null);
+  const [ingredients, setIngredients] = useState(
+    recipe?.ingredients?.length
+      ? recipe.ingredients
+      : [{ strIngredient: "", strMeasure: "" }]
+  );
 
   useEffect(() => {
-    async function fetchOptions() {
-      const cuisines = await getStaticOptions<Cuisine>("cuisines");
-      const difficulties = await getStaticOptions<Difficulty>("difficulties");
+  async function fetchOptions() {
+    const cuisinesData = await getStaticOptions<Cuisine>("cuisines");
+    const difficultiesData = await getStaticOptions<Difficulty>("difficulties");
+    const servingsData = await getStaticOptions<Serving>("servings");
 
-      setCuisines(
-        cuisines.map((c: Cuisine) => ({
-          id: c.id,
-          name: c.name,
-          region: c.region,
+    setCuisines(cuisinesData.map((c) => ({ id: c.id, name: c.name ?? "" })));
+    setDifficulties(
+      difficultiesData.map((d) => ({
+        id: d.id,
+        name: d.avgTime !== undefined ? String(d.avgTime) : "",
+      }))
+    );
+    setAvailableServings(servingsData.map((s) => ({ id: s.id, name: s.name })));
+  }
+  fetchOptions();
+}, []);
+
+useEffect(() => {
+  const fetchCategories = async () => {
+    const snapshot = await getDocs(collection(db, "categories"));
+    const cats = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return { id: doc.id, name: data.name };
+    });
+    setAvailableCategories(cats);
+  };
+  fetchCategories();
+}, []);
+
+useEffect(() => {
+  if (
+    cuisines.length > 0 &&
+    difficulties.length > 0 &&
+    servingsOptions.length > 0 &&
+    availableCategories.length > 0 &&
+    recipe
+  ) {
+    // For cuisine, difficulty, servings (map type in DB)
+    setSelectedCuisine(
+      recipe.cuisineId
+        ? { id: recipe.cuisineId.id, name: recipe.cuisineId.name ?? "" }
+        : null
+    );
+
+    setSelectedDifficulty(
+      recipe.difficultyId
+        ? {
+            id: recipe.difficultyId.id,
+            name: recipe.difficultyId.name ?? ""
+          }
+        : null
+    );
+
+    setSelectedServings(
+      recipe.servingsId
+        ? { id: recipe.servingsId.id, name: recipe.servingsId.name ?? "" }
+        : null
+    );
+
+    if (recipe.categories?.length) {
+      setSelectedCategories(
+        recipe.categories.map((cat: Category) => ({
+          id: cat.id,
+          name: cat.name ?? "",
         }))
       );
-
-      setDifficulties(
-        difficulties.map((d: Difficulty) => ({
-          id: d.id,
-          name: d.avgTime,
-        }))
-      );
+    } else {
+      setSelectedCategories([]);
     }
+  }
+}, [cuisines, difficulties, servingsOptions, availableCategories, recipe]);
 
-    fetchOptions();
-  }, []);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const snapshot = await getDocs(collection(db, "categories"));
-      const cats = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          name: data.name,
-        };
-      });
-      setAvailableCategories(cats);
-    };
-
-    fetchCategories();
-  }, []);
 
   const updateIngredient = (
     index: number,
@@ -93,22 +139,23 @@ export default function NewRecipeForm() {
     value: string
   ) => {
     setIngredients((current) =>
-      current.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
-      )
+      current.map((item, i) => (i === index ? { ...item, [field]: value } : item))
     );
   };
 
   const addIngredient = () => {
-    setIngredients((current) => [
-      ...current,
-      { strIngredient: "", strMeasure: "" },
-    ]);
+    setIngredients((current) => [...current, { strIngredient: "", strMeasure: "" }]);
   };
 
   const removeIngredient = (index: number) => {
     setIngredients((current) => current.filter((_, i) => i !== index));
   };
+
+  useEffect(() => {
+  if (state.success) {
+    router.push("/");
+  }
+}, [state.success, router]);
 
   return (
     <form
@@ -123,7 +170,7 @@ export default function NewRecipeForm() {
         type="text"
         placeholder="Enter recipe name"
         aria-describedby="strMeal-error"
-        defaultValue={state?.inputs?.strMeal}
+        defaultValue={recipe?.strMeal || state?.inputs?.strMeal}
         error={state?.errors?.strMeal}
       />
       <Textfield
@@ -132,7 +179,7 @@ export default function NewRecipeForm() {
         name="strInstructions"
         placeholder="Enter recipe instructions"
         aria-describedby="strInstructions-error"
-        defaultValue={state?.inputs?.strInstructions}
+        defaultValue={recipe?.strInstructions || state?.inputs?.strInstructions}
         error={state?.errors?.strInstructions}
         type="text"
         multiline={true}
@@ -143,7 +190,7 @@ export default function NewRecipeForm() {
         name="strMealThumb"
         placeholder="Enter image URL"
         aria-describedby="strMealThumb-error"
-        defaultValue={state?.inputs?.strMealThumb}
+        defaultValue={recipe?.strMealThumb || state?.inputs?.strMealThumb}
         error={state?.errors?.strMealThumb}
         type="url"
       />
@@ -159,6 +206,11 @@ export default function NewRecipeForm() {
       <input
         type="hidden"
         name="categoriesJSON"
+        value={JSON.stringify(selectedCategories)}
+      />
+      <input
+        type="hidden"
+        name="categoryIdsJSON"
         value={JSON.stringify(selectedCategories.map((c) => c.id))}
       />
       <Dropdown
@@ -168,7 +220,7 @@ export default function NewRecipeForm() {
         setSelected={setSelectedCuisine}
         name="cuisine"
       />
-      <input type="hidden" name="cuisineId" value={selectedCuisine?.id || ""} />
+      <input type="hidden" name="cuisineJSON" value={JSON.stringify(selectedCuisine)} />
 
       <Dropdown
         label="Cooking Time (minutes)"
@@ -179,8 +231,8 @@ export default function NewRecipeForm() {
       />
       <input
         type="hidden"
-        name="difficultyId"
-        value={selectedDifficulty?.id || ""}
+        name="difficultyJSON"
+        value={JSON.stringify(selectedDifficulty)}
       />
       <Dropdown
         label="Serving Size"
@@ -193,8 +245,8 @@ export default function NewRecipeForm() {
 
       <input
         type="hidden"
-        name="servingsId"
-        value={selectedServings?.id || ""}
+        name="servingsJSON"
+        value={JSON.stringify(selectedServings)}
       />
 
       <div>
@@ -251,7 +303,7 @@ export default function NewRecipeForm() {
       <div className="mb-4">
         <label className="block font-medium mb-1">Publish as:</label>
         <label className="inline-flex items-center space-x-2">
-          <input type="checkbox" name="isAnonymous" value="true" />
+          <input type="checkbox" name="isAnonymous" value="false" defaultChecked={recipe?.isAnonymous}/>
           <span>Post Anonymously</span>
         </label>
       </div>
@@ -261,6 +313,7 @@ export default function NewRecipeForm() {
         <select
           name="visibility"
           className="w-full border p-2 rounded bg-black"
+          defaultValue={recipe?.visibility || "public"}
         >
           <option value="public">Public (show in feed + profile)</option>
           <option value="private">Private (only on your profile)</option>
@@ -269,13 +322,16 @@ export default function NewRecipeForm() {
 
       <input type="hidden" name="authorName" value={user?.name || "Unknown"} />
       <input type="hidden" name="authorId" value={user?.id || ""} />
+      {recipe?.id && (
+  <input type="hidden" name="id" value={recipe.id} />
+)}
 
       <button
         type="submit"
         className="mt-4 bg-red-400 text-white px-4 py-2 rounded-3xl"
         disabled={isPending}
       >
-        {isPending ? "Saving..." : "Save Recipe"}
+        {isPending ? "Saving..." : submitLabel}
       </button>
     </form>
   );
