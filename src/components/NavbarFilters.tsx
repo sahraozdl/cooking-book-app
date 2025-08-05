@@ -13,12 +13,12 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Fragment, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface FilterOption {
+export interface FilterOption {
   id: string;
   name?: string;
 }
 
-interface NavbarFiltersProps {
+export interface NavbarFiltersProps {
   categories: FilterOption[];
   cuisines: FilterOption[];
   difficulties: FilterOption[];
@@ -60,10 +60,10 @@ export default function NavbarFilters({
     getMultiParam("cuisineId")
   );
   const [selectedDifficulties, setSelectedDifficulties] = useState(
-    getMultiParam("difficultyIds")
+    getMultiParam("difficultyId")
   );
   const [selectedServings, setSelectedServings] = useState(
-    getMultiParam("servingsIds")
+    getMultiParam("servingsId")
   );
 
   useEffect(() => {
@@ -73,9 +73,9 @@ export default function NavbarFilters({
     if (selectedCuisines.length > 0)
       params.set("cuisineId", selectedCuisines.join(","));
     if (selectedDifficulties.length > 0)
-      params.set("difficultyIds", selectedDifficulties.join(","));
+      params.set("difficultyId", selectedDifficulties.join(","));
     if (selectedServings.length > 0)
-      params.set("servingsIds", selectedServings.join(","));
+      params.set("servingsId", selectedServings.join(","));
     if (selectedSort) params.set("sort", selectedSort);
 
     router.replace(`?${params.toString()}`, { scroll: false });
@@ -85,6 +85,7 @@ export default function NavbarFilters({
     selectedDifficulties,
     selectedServings,
     selectedSort,
+    router,
   ]);
 
   const toggleValue = (

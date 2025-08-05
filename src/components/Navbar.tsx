@@ -1,33 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import NavbarFilters from "./NavbarFilters";
-import { db } from "@/app/lib/firebase/config";
-import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import { auth } from "@/app/lib/firebase/config";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { signOutUser } from "@/app/lib/firebase/auth";
-import { Category, Cuisine, Difficulty, Serving } from "@/types";
+
 import ProtectedContent from "./ProtectedContent";
 
 export const Navbar = () => {
-  const pathname = usePathname();
   const router = useRouter();
 
   const [user, setUser] = useState<User | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [cuisines, setCuisines] = useState<Cuisine[]>([]);
-  const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
-  const [servings, setServings] = useState<Serving[]>([]);
 
-  const isExcludedPath = (path: string) =>
-    path === "/profile" ||
-    path === "/login" ||
-    path === "/recipes/new" ||
-    path.startsWith("/recipes/categories");
-  const showFilters = !isExcludedPath(pathname);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -36,31 +22,6 @@ export const Navbar = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    async function fetchFilters() {
-      const categoriesSnapshot = await getDocs(collection(db, "categories"));
-      const cuisinesSnapshot = await getDocs(collection(db, "cuisines"));
-      const difficultiesSnapshot = await getDocs(
-        collection(db, "difficulties")
-      );
-      const servingsSnapshot = await getDocs(collection(db, "servings"));
-
-      setCategories(
-        categoriesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
-      setCuisines(
-        cuisinesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
-      setDifficulties(
-        difficultiesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
-      setServings(
-        servingsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
-    }
-
-    fetchFilters();
-  }, []);
 
   const handleLogout = async () => {
     await signOutUser();
@@ -132,16 +93,7 @@ export const Navbar = () => {
                 </Link>
               </li>
             )}
-            {showFilters && (
-              <li>
-                <NavbarFilters
-                  categories={categories}
-                  cuisines={cuisines}
-                  difficulties={difficulties}
-                  servings={servings}
-                />
-              </li>
-            )}
+            
           </ul>
         </div>
       </div>
