@@ -1,5 +1,5 @@
 import { doc, getDoc, writeBatch } from "firebase/firestore";
-import { db } from "@/store/firebase/config";
+import { db } from "@/app/lib/firebase/config";
 export async function deleteRecipe(recipeId: string, userId: string) {
   const recipeRef = doc(db, "recipes", recipeId);
   const userRef = doc(db, "users", userId);

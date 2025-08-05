@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useUser } from "@/components/UserContext";
-import { RecipeWithID } from "@/types/recipes";
+import { useUser } from "@/store/UserContext";
+import { RecipeWithID } from "@/types";
 import {
-  getPublicRecipes,
+  getRecipesFromUser,
   deleteRecipe,
 } from "@/app/actions/firestoreRecipeActions";
 import EditModal from "@/components/EditModal";
@@ -12,7 +12,8 @@ import EntryCard from "@/components/EntryCard";
 import ProfileForm from "@/components/forms/ProfileForm";
 
 export default function ProfilePage() {
-  const { user } = useUser();
+  const { user, refreshUser } = useUser();
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const [recipes, setRecipes] = useState<RecipeWithID[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,7 +24,7 @@ export default function ProfilePage() {
       if (!user?.id) return;
       setLoading(true);
       try {
-        const userRecipes = await getPublicRecipes(user.id);
+        const userRecipes = await getRecipesFromUser(user.id);
         setRecipes(userRecipes);
       } catch (error) {
         console.error("Failed to fetch user recipes:", error);
@@ -52,8 +53,9 @@ export default function ProfilePage() {
       setDeletingId(null);
     }
   };
-
-  
+  const reloadUserProfilePage = async () => {
+    await refreshUser(); // refetch the updated user data
+  };
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -71,7 +73,14 @@ export default function ProfilePage() {
         onClose={() => setShowModal(false)}
         title="Edit Profile"
       >
-        <ProfileForm user={user} onClose={() => setShowModal(false)} />
+        <ProfileForm
+          user={user}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false); // Close modal
+            reloadUserProfilePage(); // Call the refresh
+          }}
+        />
       </EditModal>
 
       <section className="mt-8">

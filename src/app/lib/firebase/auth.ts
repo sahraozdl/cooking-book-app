@@ -5,8 +5,8 @@ import {
 } from "firebase/auth";
 import { auth, db } from "./config";
 import { getDoc, doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { UserTypes } from "@/types/recipes";
-import { SignupFormSchema } from "@/app/lib/definitions";
+import { UserTypes } from "@/types";
+import { SignupFormSchema } from "@/types/definitions";
 
 async function createUserDocIfNotExists(user: UserTypes, name?: string) {
   if (!user.id) return;

@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/store/firebase/config";
-import { RecipeWithID } from "@/types/recipes";
+import { db } from "@/app/lib/firebase/config";
+import { RecipeWithID } from "@/types";
 import EntryCard from "@/components/EntryCard";
 
 interface CategoryRecipesPageProps {
@@ -9,7 +9,7 @@ interface CategoryRecipesPageProps {
 export default async function CategoryRecipesPage({
   params,
 }: CategoryRecipesPageProps) {
-  const { id: categoryId } =params;
+  const { id: categoryId } = params;
 
   const recipesQuery = query(
     collection(db, "recipes"),
@@ -18,10 +18,15 @@ export default async function CategoryRecipesPage({
 
   const querySnapshot = await getDocs(recipesQuery);
 
-  const recipes: RecipeWithID[] = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<RecipeWithID, "id">),
-  }));
+  const recipes: RecipeWithID[] = querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...(data as Omit<RecipeWithID, "id">),
+      createdAt: data.createdAt?.toDate(), // 👈 convert Firestore Timestamp to Date
+      updatedAt: data.updatedAt?.toDate(), // 👈 same here if applicable
+    };
+  });
 
   return (
     <div className="max-w-5xl mx-auto p-4">

@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { db } from "@/store/firebase/config";
-import { RecipeFormData, RecipeWithID } from "@/types/recipes";
+import { db } from "@/app/lib/firebase/config";
+import { RecipeFormData, RecipeWithID } from "@/types";
 
 interface Filters {
   categories?: string[];

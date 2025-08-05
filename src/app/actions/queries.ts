@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebase/firestore";
-import { db } from "@/store/firebase/config";
-import { RecipeFormData, RecipeWithID, Category } from "@/types/recipes";
+import { db } from "@/app/lib/firebase/config";
+import { RecipeFormData, RecipeWithID, Category } from "@/types";
 
 export async function getPublicRecipesFromFollowedUsers(followingIds: string[]) {
   if (followingIds.length === 0) return [];
@@ -34,7 +34,7 @@ export async function getUserPublicRecipes(userId: string): Promise<RecipeWithID
   }));
 }
 
-export async function getPublicRecipes(userId: string): Promise<RecipeWithID[]> {
+export async function getRecipesFromUser(userId: string): Promise<RecipeWithID[]> {
   const q = query(collection(db, "recipes"), where("authorId", "==", userId));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({

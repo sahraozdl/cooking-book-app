@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getFilteredSortedRecipes } from "@/app/actions/firestoreRecipeActions";
 import EntryCard from "@/components/EntryCard";
-import { RecipeWithID } from "@/types/recipes";
+import { RecipeWithID } from "@/types";
 
 function parseArrayParam(param: string | null): string[] {
   if (!param) return [];
@@ -39,9 +39,11 @@ export default function HomePage() {
           (recipe.cuisineId && cuisines.includes(recipe.cuisineId.id));
         const matchesDifficulty =
           difficulties.length === 0 ||
-          (recipe.difficultyId && difficulties.includes(recipe.difficultyId.id));
+          (recipe.difficultyId &&
+            difficulties.includes(recipe.difficultyId.id));
         const matchesServings =
-          servings.length === 0 || (recipe.servingsId && servings.includes(recipe.servingsId.id));
+          servings.length === 0 ||
+          (recipe.servingsId && servings.includes(recipe.servingsId.id));
 
         return matchesCuisine && matchesDifficulty && matchesServings;
       });

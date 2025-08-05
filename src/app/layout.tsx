@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { UserProvider } from "@/components/UserContext";
+import { UserProvider } from "@/store/UserContext";
 
 export const metadata: Metadata = {
   title: "Cooking Book App",
@@ -16,8 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      >
+      <body>
         <UserProvider>
           <Navbar />
 

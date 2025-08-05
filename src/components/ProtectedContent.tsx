@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { useUser } from "./UserContext";
+import { useUser } from "../store/UserContext";
 
 export default function ProtectedContent({
   children,

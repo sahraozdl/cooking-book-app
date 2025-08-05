@@ -8,10 +8,10 @@ import {
   getUserById,
   getUserFollowers,
   getUserFollowing,
-} from "@/store/firebase/firestoreUser";
-import { useUser } from "@/components/UserContext";
+} from "@/app/lib/firebase/firestoreUser";
+import { useUser } from "@/store/UserContext";
 import EntryCard from "@/components/EntryCard";
-import { UserTypes, RecipeWithID } from "@/types/recipes";
+import { UserTypes, RecipeWithID } from "@/types";
 import { getUserPublicRecipes } from "@/app/actions/firestoreRecipeActions";
 
 export default function UserProfilePage() {

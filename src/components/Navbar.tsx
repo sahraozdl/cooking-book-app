@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import NavbarFilters from "./NavbarFilters";
-import { db } from "@/store/firebase/config";
+import { db } from "@/app/lib/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { auth } from "@/store/firebase/config";
+import { auth } from "@/app/lib/firebase/config";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { signOutUser } from "@/store/firebase/auth";
-import { Category, Cuisine, Difficulty,Serving } from "@/types/recipes";
+import { signOutUser } from "@/app/lib/firebase/auth";
+import { Category, Cuisine, Difficulty, Serving } from "@/types";
 import ProtectedContent from "./ProtectedContent";
 
 export const Navbar = () => {
@@ -22,13 +22,12 @@ export const Navbar = () => {
   const [difficulties, setDifficulties] = useState<Difficulty[]>([]);
   const [servings, setServings] = useState<Serving[]>([]);
 
-  const excludedPaths = [
-    "/profile",
-    "/recipes/categories",
-    "/login",
-    "/recipes/new",
-  ];
-  const showFilters = !excludedPaths.includes(pathname);
+  const isExcludedPath = (path: string) =>
+    path === "/profile" ||
+    path === "/login" ||
+    path === "/recipes/new" ||
+    path.startsWith("/recipes/categories");
+  const showFilters = !isExcludedPath(pathname);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

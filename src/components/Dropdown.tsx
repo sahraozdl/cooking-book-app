@@ -25,7 +25,6 @@ export default function Dropdown<T extends boolean = false>({
   options,
   selected,
   setSelected,
-  name,
   multiple = false as T,
 }: DropdownProps<T>) {
   const isSelected = (option: Option) => {
@@ -101,21 +100,7 @@ export default function Dropdown<T extends boolean = false>({
         </div>
       </Listbox>
 
-      {multiple ? (
-        <input
-          type="hidden"
-          name={name}
-          value={
-            Array.isArray(selected)
-              ? JSON.stringify(selected.map((s) => s.id))
-              : ""
-          }
-        />
-      ) : (
-        selected && (
-          <input type="hidden" name={name} value={(selected as Option).id} />
-        )
-      )}
+      
     </Field>
   );
 }

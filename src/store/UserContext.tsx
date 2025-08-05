@@ -1,9 +1,9 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { UserTypes } from "@/types/recipes";
+import { UserTypes } from "@/types";
 import { doc, getDoc } from "firebase/firestore";
-import { db, auth } from "@/store/firebase/config";
+import { db, auth } from "@/app/lib/firebase/config";
 
 interface IUserContext {
   user: UserTypes | null;
@@ -72,4 +72,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  const { user, setUser } = context;
+
+  const refreshUser = async () => {
+    if (!user?.id) return;
+    const userDoc = await getDoc(doc(db, "users", user.id));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      setUser((prev) => ({
+        ...prev!,
+        ...userData,
+        createdAt: userData.createdAt?.toDate() ?? prev?.createdAt,
+      }));
+    }
+  };
+
+  return { ...context, refreshUser };
+};

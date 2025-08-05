@@ -8,8 +8,8 @@ import {
   toggleRecipeLike,
   toggleRecipeSave,
 } from "@/app/actions/firestoreRecipeActions";
-import { useUser } from "@/components/UserContext";
-import { RecipeWithID } from "@/types/recipes";
+import { useUser } from "@/store/UserContext";
+import { RecipeWithID } from "@/types";
 import EditModal from "@/components/EditModal";
 import NewRecipeForm from "@/components/forms/NewRecipeForm";
 
@@ -189,7 +189,7 @@ export default function EntryCard({
           <NewRecipeForm
             recipe={entry}
             onClose={() => setShowEditModal(false)}
-            />
+          />
         </EditModal>
       )}
     </div>

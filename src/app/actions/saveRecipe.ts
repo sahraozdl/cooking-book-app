@@ -5,11 +5,21 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db, recipesCollectionRef } from "@/store/firebase/config";
+import { db, recipesCollectionRef } from "@/app/lib/firebase/config";
 import { recipeSchema } from "./schema";
-import { UserTypes, NewRecipeFormState } from "@/types/recipes";
+import { UserTypes, NewRecipeFormState, RecipeSchemaType } from "@/types";
 
-export async function saveRecipe(prevState: NewRecipeFormState | null, formData: FormData) {
+function safeJSONParse<T>(value: FormDataEntryValue | null, fallback: T): T {
+  try {
+    if (!value) return fallback;
+    return JSON.parse(value as string) as T;
+  } catch (err) {
+    console.warn("Failed to parse JSON value:", value, err);
+    return fallback;
+  }
+}
+export async function saveRecipe(prevState: NewRecipeFormState | null, formData: FormData):
+  Promise<NewRecipeFormState> {
   const recipeId = formData.get("id") as string | null;
 
   try {
@@ -28,20 +38,20 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
       (ing) => ing.strIngredient.trim() || ing.strMeasure.trim()
     );
 
-    const rawData = {
+    const rawData: RecipeSchemaType = {
       strMeal: formData.get("strMeal") as string,
       strInstructions: formData.get("strInstructions") as string,
       strMealThumb: formData.get("strMealThumb") as string,
       categories: safeJSONParse(formData.get("categoriesJSON"), []),
       categoryIds: safeJSONParse(formData.get("categoryIdsJSON"), []),
-      cuisineId: safeJSONParse(formData.get("cuisineJSON"), null),
-      difficultyId: safeJSONParse(formData.get("difficultyJSON"), null),
-      servingsId: safeJSONParse(formData.get("servingsJSON"), null),
+      cuisineId: safeJSONParse(formData.get("cuisineJSON"), { id: "", name: "" }),
+      difficultyId: safeJSONParse(formData.get("difficultyJSON"), { id: "", name: "" }),
+      servingsId: safeJSONParse(formData.get("servingsJSON"), { id: "", name: "" }),
       ingredients: filteredIngredients,
       isAnonymous: formData.get("isAnonymous") === "true",
       visibility: (formData.get("visibility") as "public" | "private") || "private",
       authorName: (formData.get("authorName") as string) || "Unknown",
-      authorId: formData.get("authorId") || null,
+      authorId: formData.get("authorId") as string,
       likedBy: [],
       savedBy: [],
       likeCount: 0,
@@ -55,7 +65,7 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
         success: false,
         message: "Validation failed. Please check your input.",
         errors: validateData.error.flatten().fieldErrors,
-        inputs: rawData,
+        inputs: rawData, // return previous inputs if available
       };
     }
 
@@ -120,17 +130,8 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
     return {
       success: false,
       message: "Failed to save recipe. Please try again.",
-      inputs: null,
+      inputs: prevState?.inputs, // this is OK if prevState.inputs exists
     };
   }
 }
 
-function safeJSONParse<T>(value: FormDataEntryValue | null, fallback: T): T {
-  try {
-    if (!value) return fallback;
-    return JSON.parse(value as string) as T;
-  } catch (err) {
-    console.warn("Failed to parse JSON value:", value, err);
-    return fallback;
-  }
-}

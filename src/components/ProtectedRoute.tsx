@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect } from "react";
-import { useUser } from "./UserContext";
+import { useUser } from "../store/UserContext";
 import { useRouter } from "next/navigation";
 
 interface ProtectedRouteProps {

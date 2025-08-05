@@ -4,7 +4,7 @@ import {
   signUpUser,
   signInUser,
   signInWithGoogle,
-} from "@/store/firebase/auth";
+} from "@/app/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function AuthForm() {

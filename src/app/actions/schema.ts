@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const idLabelSchema = z.object({
+export const idLabelSchema = z.object({
   id: z.string(),
   name: z.string(),
 });

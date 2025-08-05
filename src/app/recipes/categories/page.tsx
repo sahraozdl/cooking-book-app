@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/store/firebase/config";
+import { db } from "@/app/lib/firebase/config";
 import Image from "next/image";
 import Link from "next/link";
-import { Category } from "@/types/recipes";
+import { Category } from "@/types";
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
 
