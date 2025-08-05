@@ -23,13 +23,13 @@ export default async function CategoryRecipesPage({
     return {
       id: doc.id,
       ...(data as Omit<RecipeWithID, "id">),
-      createdAt: data.createdAt?.toDate(), // 👈 convert Firestore Timestamp to Date
-      updatedAt: data.updatedAt?.toDate(), // 👈 same here if applicable
+      createdAt: data.createdAt?.toDate(),
+      updatedAt: data.updatedAt?.toDate(),
     };
   });
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="max-w-5xl mx-auto p-4 text-gray-800">
       <h1 className="text-3xl font-bold mb-6">Recipes in Category</h1>
       {recipes.length === 0 && <p>No recipes found in this category.</p>}
 

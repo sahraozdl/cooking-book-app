@@ -1,3 +1,5 @@
+"use client";
+
 import { Field, Input, Label, Textarea } from "@headlessui/react";
 
 function Textfield({
@@ -20,8 +22,13 @@ function Textfield({
   multiline?: boolean;
 }) {
   return (
-    <Field className="flex flex-col my-4">
-      <Label htmlFor={id}>{label}</Label>
+    <Field className="flex flex-col my-4 text-black">
+      <Label
+        htmlFor={id}
+        className="mb-1 text-sm font-semibold text-orange-700"
+      >
+        {label}
+      </Label>
       {multiline ? (
         <Textarea
           id={id}
@@ -29,10 +36,10 @@ function Textfield({
           placeholder={placeholder}
           aria-describedby={`${id}-error`}
           defaultValue={defaultValue}
-          className={`border rounded p-2 ${
-            error ? "border-red-500" : "border-gray-300"
-          }`}
           rows={5}
+          className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition bg-white ${
+            error ? "border-red-500" : "border-orange-300"
+          }`}
         />
       ) : (
         <Input
@@ -42,17 +49,18 @@ function Textfield({
           placeholder={placeholder}
           aria-describedby={`${id}-error`}
           defaultValue={defaultValue}
-          className={`border rounded p-2 ${
-            error ? "border-red-500" : "border-gray-300"
+          className={`border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition bg-white ${
+            error ? "border-red-500" : "border-orange-300"
           }`}
         />
       )}
       {error && (
-        <span id={`${id}-error`} className="text-red-500 text-sm">
-          {error}
+        <span id={`${id}-error`} className="text-red-600 text-sm mt-1">
+          {error.join(", ")}
         </span>
       )}
     </Field>
   );
 }
+
 export default Textfield;

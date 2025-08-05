@@ -17,6 +17,8 @@ import Dropdown from "@/components/Dropdown";
 import Textfield from "@/components/Textfield";
 import { useUser } from "@/store/UserContext";
 import { useRouter } from "next/navigation";
+import PrimaryButton from "../buttons/PrimaryButton";
+import SecondaryButton from "../buttons/SecondaryButton";
 
 const initialState: NewRecipeFormState = {
   success: false,
@@ -25,7 +27,6 @@ const initialState: NewRecipeFormState = {
 
 interface NewRecipeFormProps {
   recipe?: Partial<RecipeWithID>;
-  onSubmit?: (formData: FormData) => void;
   onClose?: () => void;
   submitLabel?: string;
 }
@@ -96,7 +97,6 @@ export default function NewRecipeForm({
       categories.length > 0 &&
       recipe
     ) {
-      // For cuisine, difficulty, servings (map type in DB)
       setSelectedCuisine(
         recipe.cuisineId
           ? { id: recipe.cuisineId.id, name: recipe.cuisineId.name ?? "" }
@@ -160,6 +160,14 @@ export default function NewRecipeForm({
     }
   }, [state.success, router]);
 
+  const hiddenFields = [
+    { name: "cuisineJSON", value: selectedCuisine },
+    { name: "difficultyJSON", value: selectedDifficulty },
+    { name: "servingsJSON", value: selectedServings },
+    { name: "categoriesJSON", value: selectedCategories },
+    { name: "categoryIdsJSON", value: selectedCategories.map((c) => c.id) },
+  ];
+
   return (
     <form
       action={action}
@@ -206,16 +214,7 @@ export default function NewRecipeForm({
         name="categories"
         multiple={true}
       />
-      <input
-        type="hidden"
-        name="categoriesJSON"
-        value={JSON.stringify(selectedCategories)}
-      />
-      <input
-        type="hidden"
-        name="categoryIdsJSON"
-        value={JSON.stringify(selectedCategories.map((c) => c.id))}
-      />
+
       <Dropdown
         label="Cuisine"
         name="cuisine"
@@ -223,11 +222,6 @@ export default function NewRecipeForm({
         selected={selectedCuisine}
         setSelected={setSelectedCuisine}
         multiple={false}
-      />
-      <input
-        type="hidden"
-        name="cuisineJSON"
-        value={JSON.stringify(selectedCuisine)}
       />
 
       <Dropdown
@@ -238,11 +232,7 @@ export default function NewRecipeForm({
         setSelected={setSelectedDifficulty}
         multiple={false}
       />
-      <input
-        type="hidden"
-        name="difficultyJSON"
-        value={JSON.stringify(selectedDifficulty)}
-      />
+
       <Dropdown
         label="Serving Size"
         name="servings"
@@ -252,16 +242,12 @@ export default function NewRecipeForm({
         multiple={false}
       />
 
-      <input
-        type="hidden"
-        name="servingsJSON"
-        value={JSON.stringify(selectedServings)}
-      />
-
       <div>
-        <label className="font-medium mb-2 block">Ingredients</label>
+        <label className="mb-2 block text-orange-700 font-semibold">
+          Ingredients
+        </label>
         {ingredients.map((ing, i) => (
-          <div key={i} className="flex gap-2 mb-2">
+          <div key={i} className="flex flex-col md:flex-row gap-2 mb-2">
             <input
               type="text"
               placeholder="Ingredient"
@@ -269,15 +255,9 @@ export default function NewRecipeForm({
               onChange={(e) =>
                 updateIngredient(i, "strIngredient", e.target.value)
               }
-              className="border rounded px-2 py-1 flex-grow"
+              className="border border-orange-300 p-2 rounded bg-white w-full text-left text-gray-900 min-h-[42px] flex flex-wrap gap-2 hover:ring-2 hover:ring-orange-400 transition focus:outline-orange-400"
               name={`ingredients[${i}][strIngredient]`}
             />
-            <label
-              className="sr-only"
-              htmlFor={`ingredients[${i}][strMeasure]`}
-            >
-              Measure
-            </label>
             <input
               type="text"
               placeholder="e.g., 1 cup"
@@ -285,48 +265,55 @@ export default function NewRecipeForm({
               onChange={(e) =>
                 updateIngredient(i, "strMeasure", e.target.value)
               }
-              className="border rounded px-2 py-1 w-24"
+              className="border border-orange-300 p-2 rounded bg-white w-full text-left text-gray-900 min-h-[42px] flex flex-wrap gap-2 hover:ring-2 hover:ring-orange-400 transition max-w-1/5 focus:outline-orange-400"
               name={`ingredients[${i}][strMeasure]`}
             />
             {ingredients.length > 1 && (
-              <button
+              <SecondaryButton
                 type="button"
                 onClick={() => removeIngredient(i)}
-                className="text-gray-300 font-bold px-2 cursor-pointer hover:animate-pulse hover:scale-200 transition-transform duration-200"
                 aria-label="Remove ingredient"
               >
-                -
-              </button>
+                &minus;
+              </SecondaryButton>
             )}
           </div>
         ))}
 
-        <button
-          type="button"
-          onClick={addIngredient}
-          className="mt-2 text-sm bg-gray-600 text-white px-3 py-1 rounded cursor-pointer"
-        >
-          +
-        </button>
+        <PrimaryButton type="button" onClick={addIngredient}>
+          + Add
+        </PrimaryButton>
       </div>
+      {hiddenFields.map(({ name, value }) => (
+        <input
+          key={name}
+          type="hidden"
+          name={name}
+          value={JSON.stringify(value)}
+        />
+      ))}
       <div className="mb-4">
-        <label className="block font-medium mb-1">Publish as:</label>
+        <label className="mb-2 block text-orange-700 font-semibold">
+          Publish as:
+        </label>
         <label className="inline-flex items-center space-x-2">
           <input
             type="checkbox"
             name="isAnonymous"
-            value="false"
+            value="true"
             defaultChecked={recipe?.isAnonymous}
           />
-          <span>Post Anonymously</span>
+          <span className="text-black">Post Anonymously</span>
         </label>
       </div>
 
       <div className="mb-4">
-        <label className="block font-medium mb-1">Visibility:</label>
+        <label className="mb-2 block text-orange-700 font-semibold">
+          Visibility:
+        </label>
         <select
           name="visibility"
-          className="w-full border p-2 rounded bg-black"
+          className="w-full border border-orange-300 rounded px-3 py-2 bg-white text-gray-800"
           defaultValue={recipe?.visibility || "public"}
         >
           <option value="public">Public (show in feed + profile)</option>
@@ -338,13 +325,9 @@ export default function NewRecipeForm({
       <input type="hidden" name="authorId" value={user?.id || ""} />
       {recipe?.id && <input type="hidden" name="id" value={recipe.id} />}
 
-      <button
-        type="submit"
-        className="mt-4 bg-red-400 text-white px-4 py-2 rounded-3xl"
-        disabled={isPending}
-      >
+      <PrimaryButton type="submit" disabled={isPending}>
         {isPending ? "Saving..." : submitLabel}
-      </button>
+      </PrimaryButton>
     </form>
   );
 }

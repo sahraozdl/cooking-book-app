@@ -65,7 +65,7 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
         success: false,
         message: "Validation failed. Please check your input.",
         errors: validateData.error.flatten().fieldErrors,
-        inputs: rawData, // return previous inputs if available
+        inputs: rawData,
       };
     }
 
@@ -130,7 +130,7 @@ export async function saveRecipe(prevState: NewRecipeFormState | null, formData:
     return {
       success: false,
       message: "Failed to save recipe. Please try again.",
-      inputs: prevState?.inputs, // this is OK if prevState.inputs exists
+      inputs: prevState?.inputs,
     };
   }
 }

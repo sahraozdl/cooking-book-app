@@ -12,6 +12,16 @@ import { useUser } from "@/store/UserContext";
 import { RecipeWithID } from "@/types";
 import EditModal from "@/components/EditModal";
 import NewRecipeForm from "@/components/forms/NewRecipeForm";
+import ActionIconButton from "@/components/buttons/ActionIconButton";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
+import {
+  HeartIcon,
+  StarIcon,
+  BowlFoodIcon,
+  ClockCountdownIcon,
+  GlobeHemisphereEastIcon,
+} from "@phosphor-icons/react";
 
 interface EntryCardProps {
   entry: RecipeWithID;
@@ -84,8 +94,8 @@ export default function EntryCard({
   };
 
   return (
-    <div className="border rounded-xl p-4 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900">
-      <div className="flex items-start gap-4">
+    <div className="border rounded-xl p-4 shadow-sm bg-white text-gray-800">
+      <div className="flex flex-col sm:flex-row items-start gap-4">
         {entry.strMealThumb && (
           <Image
             src={entry.strMealThumb}
@@ -96,19 +106,29 @@ export default function EntryCard({
           />
         )}
 
-        <div className="flex-1 space-y-1">
-          <h3 className="text-lg font-semibold dark:text-white">
-            {entry.strMeal}
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+        <div className="flex-1 space-y-2">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+  <h3 className="text-lg font-semibold">{entry.strMeal}</h3>
+
+  <div className="flex flex-row flex-wrap gap-4 text-xs text-gray-500 min-w-1/6">
+    <div className="flex items-center gap-1">
+      <BowlFoodIcon size={16} />
+      <span>{entry.servingsId?.name}</span>
+    </div>
+    <div className="flex items-center gap-1">
+      <ClockCountdownIcon size={16} />
+      <span>{entry.difficultyId?.name}</span>
+    </div>
+    <div className="flex items-center gap-1">
+      <GlobeHemisphereEastIcon size={16} />
+      <span>{entry.cuisineId?.name}</span>
+    </div>
+  </div>
+</div>
+
+          <p className="text-sm text-gray-600 line-clamp-3">
             {entry.strInstructions}
           </p>
-
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 space-x-2">
-            <span>🍽️ Servings: {entry.servingsId?.name}</span>
-            <span>🌶️ Difficulty: {entry.difficultyId?.name}</span>
-            <span>🌍 Cuisine: {entry.cuisineId?.name}</span>
-          </div>
 
           {showAuthor && entry.authorId && (
             <p className="text-sm">
@@ -118,7 +138,7 @@ export default function EntryCard({
               ) : (
                 <Link
                   href={`/profile/${entry.authorId}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-orange-600 hover:underline"
                 >
                   {entry.authorName}
                 </Link>
@@ -126,54 +146,40 @@ export default function EntryCard({
             </p>
           )}
 
-          <div className="flex gap-4 mt-2 items-center">
-            <button
+          <div className="flex flex-wrap gap-3 items-center">
+            <ActionIconButton
+              active={liked}
               onClick={() => handleToggle("like")}
-              className={`text-sm ${
-                liked ? "text-red-500" : "text-gray-500"
-              } hover:underline`}
-            >
-              ❤️ {liked ? "Liked" : "Like"} (
-              {entry.likeCount ?? entry.likedBy?.length ?? 0})
-            </button>
+              icon={<HeartIcon size={16} />}
+              activeIcon={<HeartIcon size={16} weight="fill" />}
+              label="Like "
+              count={entry.likeCount ?? entry.likedBy?.length ?? 0}
+            />
 
-            <button
+            <ActionIconButton
+              active={saved}
               onClick={() => handleToggle("save")}
-              className={`text-sm ${
-                saved ? "text-green-600" : "text-gray-500"
-              } hover:underline`}
-            >
-              📌 {saved ? "Saved" : "Save"} (
-              {entry.saveCount ?? entry.savedBy?.length ?? 0})
-            </button>
+              icon={<StarIcon size={16} />}
+              activeIcon={<StarIcon size={16} weight="fill" />}
+              label="Save"
+              count={entry.saveCount ?? entry.savedBy?.length ?? 0}
+            />
 
             <Link
               href={`/recipes/${entry.id}`}
-              className="ml-auto text-purple-600 hover:underline text-sm"
+              className="ml-auto text-orange-500 hover:underline text-sm"
             >
               View full recipe
             </Link>
 
             {editable && (
-              <div className="flex space-x-2 ml-4">
-                <button
-                  onClick={() => setShowEditModal(true)}
-                  className="btn btn-sm btn-primary"
-                  aria-label="Edit recipe"
-                >
+              <div className="flex flex-wrap gap-2 ml-2">
+                <PrimaryButton onClick={() => setShowEditModal(true)}>
                   Edit
-                </button>
-
-                <button
-                  onClick={onDelete}
-                  disabled={isDeleting}
-                  className={`btn btn-sm btn-danger ${
-                    isDeleting ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  aria-label="Delete recipe"
-                >
+                </PrimaryButton>
+                <SecondaryButton onClick={onDelete} disabled={isDeleting}>
                   {isDeleting ? "Deleting..." : "Delete"}
-                </button>
+                </SecondaryButton>
               </div>
             )}
           </div>

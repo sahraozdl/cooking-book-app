@@ -1,4 +1,3 @@
-// updateProfileAction.ts
 "use server";
 
 import { updateProfile } from "@/app/lib/firebase/firestoreUser";

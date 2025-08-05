@@ -5,19 +5,18 @@ import { useUser } from "@/store/UserContext";
 import { RecipeWithID } from "@/types";
 import {
   getRecipesFromUser,
-  deleteRecipe,
 } from "@/app/actions/firestoreRecipeActions";
 import EditModal from "@/components/EditModal";
-import EntryCard from "@/components/EntryCard";
 import ProfileForm from "@/components/forms/ProfileForm";
+import RecipeList from "@/components/RecipeList";
+import SecondaryButton from "@/components/buttons/SecondaryButton";
 
 export default function ProfilePage() {
-  const { user, refreshUser } = useUser();
+  const { user } = useUser();
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [recipes, setRecipes] = useState<RecipeWithID[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -38,32 +37,15 @@ export default function ProfilePage() {
 
   if (!user) return <p>Loading user...</p>;
 
-  const handleDelete = async (recipeId: string) => {
-    if (!user?.id) return;
-    if (!confirm("Are you sure you want to delete this recipe?")) return;
-
-    setDeletingId(recipeId);
-    try {
-      await deleteRecipe(recipeId, user.id);
-      setRecipes((prev) => prev.filter((r) => r.id !== recipeId));
-    } catch (error) {
-      console.error("Failed to delete recipe:", error);
-      alert("Failed to delete recipe. Please try again.");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-  const reloadUserProfilePage = async () => {
-    await refreshUser(); // refetch the updated user data
-  };
+  
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <div className="p-4 max-w-3xl mx-auto text-gray-900">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{user.name || "No name"}</h1>
-        <button onClick={() => setShowModal(true)} className="btn">
+        <SecondaryButton onClick={() => setShowModal(true)}>
           Edit Profile
-        </button>
+        </SecondaryButton>
       </div>
 
       <p className="text-gray-500">{user.email}</p>
@@ -77,8 +59,7 @@ export default function ProfilePage() {
           user={user}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
-            setShowModal(false); // Close modal
-            reloadUserProfilePage(); // Call the refresh
+            setShowModal(false);
           }}
         />
       </EditModal>
@@ -90,15 +71,10 @@ export default function ProfilePage() {
         ) : recipes.length === 0 ? (
           <p>No recipes found.</p>
         ) : (
-          recipes.map((recipe) => (
-            <EntryCard
-              key={recipe.id}
-              entry={recipe}
-              editable
-              onDelete={() => handleDelete(recipe.id)}
-              isDeleting={deletingId === recipe.id}
-            />
-          ))
+          <RecipeList recipes={recipes}
+          
+          editable={true}
+          />
         )}
       </section>
     </div>

@@ -16,8 +16,8 @@ export interface UserTypes {
   following?: string[];
   followers?: string[];
   writesCount?: number;
-  savedRecipes?: string[];  // ✅
-  likedRecipes?: string[];  // ✅
+  savedRecipes?: string[];
+  likedRecipes?: string[];
   errors?: {
     name?: string[];
     email?: string[];

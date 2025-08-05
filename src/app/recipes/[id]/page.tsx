@@ -5,14 +5,14 @@ import { notFound } from "next/navigation";
 import { Category, Cuisine, Difficulty, RecipeWithID } from "@/types";
 import { getCategoriesByIds } from "@/app/actions/firestoreRecipeActions";
 
-export default async function RecipeDetailsPage({
-  params,
-}: {
+interface RecipeDetailsPageProps {
   params: { id: string };
-}) {
-  const { id } = await params;
+}
 
-  // Fetch main recipe
+export default async function RecipeDetailsPage({ params }: RecipeDetailsPageProps) {
+  const { id } = params;
+
+
   const recipeRef = doc(db, "recipes", id);
   const recipeSnap = await getDoc(recipeRef);
   if (!recipeSnap.exists()) return notFound();
@@ -22,103 +22,104 @@ export default async function RecipeDetailsPage({
     ...recipeSnap.data(),
   } as RecipeWithID;
 
-  // Fetch difficulty (if present)
+ 
+  const getId = (val?: string | { id?: string }) =>
+    typeof val === "string" ? val : val?.id;
+
+ 
   let difficulty: Difficulty | null = null;
-  const difficultyId =
-    typeof recipe.difficultyId === "string"
-      ? recipe.difficultyId
-      : recipe.difficultyId?.id; // or undefined
-
+  const difficultyId = getId(recipe.difficultyId);
   if (difficultyId) {
-    const snap = await getDoc(doc(db, "difficulties", difficultyId));
-    if (snap.exists()) {
-      difficulty = { id: snap.id, ...snap.data() } as Difficulty;
+    const diffSnap = await getDoc(doc(db, "difficulties", difficultyId));
+    if (diffSnap.exists()) {
+      difficulty = { id: diffSnap.id, ...diffSnap.data() } as Difficulty;
     }
   }
 
-  // Fetch cuisine
+
   let cuisine: Cuisine | null = null;
-  const cuisineId =
-    typeof recipe.cuisineId === "string"
-      ? recipe.cuisineId
-      : recipe.cuisineId?.id;
-
+  const cuisineId = getId(recipe.cuisineId);
   if (cuisineId) {
-    const snap = await getDoc(doc(db, "cuisines", cuisineId));
-    if (snap.exists()) {
-      cuisine = { id: snap.id, ...snap.data() } as Cuisine;
+    const cuisineSnap = await getDoc(doc(db, "cuisines", cuisineId));
+    if (cuisineSnap.exists()) {
+      cuisine = { id: cuisineSnap.id, ...cuisineSnap.data() } as Cuisine;
     }
   }
 
-  // Fetch categories
+
   let categories: Category[] = [];
-  if (recipe.categories?.length) {
-    const categoryIds = recipe.categories.map((cat: Category) =>
-      typeof cat === "string" ? cat : cat.id
-    );
-    categories = await getCategoriesByIds(categoryIds);
+  if (Array.isArray(recipe.categories) && recipe.categories.length > 0) {
+    const categoryIds = recipe.categories.map((cat) => getId(cat) ?? "");
+    categories = await getCategoriesByIds(categoryIds.filter(Boolean));
   }
 
   return (
-    <div className="p-4 max-w-3xl mx-auto space-y-4">
-      <h1 className="text-2xl font-bold">{recipe.strMeal}</h1>
+    <article className="p-4 max-w-4xl mx-auto space-y-6 text-gray-800 ">
+      <h1 className="text-2xl sm:text-3xl font-bold break-words">{recipe.strMeal}</h1>
 
-      {difficulty && (
-        <p>
-          <strong>Difficulty:</strong> {difficulty.name} ({difficulty.avgTime})
-        </p>
-      )}
+      <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 text-sm ">
+        {difficulty && (
+          <p>
+            <strong>Difficulty:</strong> {difficulty.name} ({difficulty.avgTime})
+          </p>
+        )}
 
-      {cuisine && (
-        <p>
-          <strong>Cuisine:</strong> {cuisine.name} ({cuisine.region})
-        </p>
-      )}
+        {cuisine && (
+          <p>
+            <strong>Cuisine:</strong> {cuisine.name} ({cuisine.region})
+          </p>
+        )}
 
-      {categories.length > 0 && (
-        <div>
-          <strong>Categories:</strong>
-          <ul>
-            {categories.map((cat) => (
-              <li key={cat.id}>{cat.name}</li>
-            ))}
-          </ul>
+        {categories.length > 0 && (
+          <p>
+            <strong>Categories:</strong>{" "}
+            {categories.map((cat) => cat.name).join(", ")}
+          </p>
+        )}
+      </div>
+
+
+      <div className="flex flex-col md:flex-row md:space-x-8 ">
+
+        <div className="w-full md:w-1/2 max-w-xs md:max-w-full mx-auto mb-2 md:mb-0 ">
+          {recipe.strMealThumb ? (
+            <Image
+              src={recipe.strMealThumb}
+              alt={recipe.strMeal}
+              width={300}
+              height={300}
+              className="rounded object-cover "
+              priority
+            />
+          ) : (
+
+            <div className="bg-gray-200  rounded w-full aspect-square" />
+          )}
         </div>
-      )}
 
-      {recipe.strMealThumb && (
-        <Image
-          src={recipe.strMealThumb}
-          alt={recipe.strMeal}
-          width={200}
-          height={200}
-          className="rounded"
-        />
-      )}
-
-      <p className="text-gray-700 whitespace-pre-line">
-        {recipe.strInstructions}
-      </p>
+        <section className="whitespace-pre-line leading-relaxed text-sm sm:text-base md:w-1/2">
+          {recipe.strInstructions}
+        </section>
+      </div>
 
       {recipe.ingredients?.length > 0 && (
-        <div>
-          <h2 className="font-semibold mt-4">Ingredients:</h2>
-          <ul>
+        <section>
+          <h2 className="font-semibold mt-6 mb-2 text-lg ">Ingredients:</h2>
+          <ul className="list-disc list-inside ml-5 space-y-1 text-sm sm:text-base ">
             {recipe.ingredients.map((ing, idx) => (
               <li key={idx}>
                 {ing.strIngredient} — {ing.strMeasure}
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
 
       {recipe.authorName && (
-        <p>
-          <strong>Author:</strong>{" "}
-          {recipe.isAnonymous ? "Anonymous" : recipe.authorName}
+        <p className="mt-6 text-sm sm:text-base text-gray-700">
+          <strong>Author:</strong> {recipe.isAnonymous ? "Anonymous" : recipe.authorName}
         </p>
       )}
-    </div>
+    </article>
   );
 }

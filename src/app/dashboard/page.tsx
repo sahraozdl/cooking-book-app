@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { getPublicRecipesFromFollowedUsers } from "@/app/actions/firestoreRecipeActions";
-import EntryCard from "@/components/EntryCard";
 import { useUser } from "@/store/UserContext";
 import { RecipeWithID } from "@/types";
+import RecipeList from "@/components/RecipeList";
 
 export default function DashboardPage() {
   const { user } = useUser();
   const [entries, setEntries] = useState<RecipeWithID[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -20,7 +19,6 @@ export default function DashboardPage() {
         );
         setEntries(fetchedEntries);
       }
-      setLoading(false);
     };
 
     fetchEntries();
@@ -28,17 +26,11 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute>
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 p-4 text-gray-900">
         <h1 className="text-2xl font-bold">Feed</h1>
-        {loading ? (
-          <p>Loading entries...</p>
-        ) : entries.length === 0 ? (
-          <p>No entries to show.(because you do not follow anyone)</p>
-        ) : (
-          entries.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} showAuthor={true} />
-          ))
-        )}
+        <RecipeList 
+        recipes={entries}
+        />
       </div>
     </ProtectedRoute>
   );

@@ -14,11 +14,11 @@ export async function getFilteredSortedRecipesFromParams(
     difficultyId: searchParams.get("difficultyId")?.split(",").filter(Boolean),
     servingsId: searchParams.get("servingsId")?.split(",").filter(Boolean),
   };
-
+console.log(filters)
   const constraints: QueryConstraint[] = [];
-
+console.log(constraints)
   if (filters.categories?.length) {
-    constraints.push(where("categories", "array-contains-any", filters.categories));
+    constraints.push(where("categoryIds", "array-contains-any", filters.categories));
   }
 
   if (filters.cuisineId?.length) {
@@ -32,7 +32,7 @@ export async function getFilteredSortedRecipesFromParams(
   if (filters.servingsId?.length) {
     constraints.push(where("servingsId.id", "in", filters.servingsId));
   }
-
+console.log(constraints)
   switch (sort) {
     case "mostLiked":
       constraints.push(orderBy("likeCount", "desc"));

@@ -9,14 +9,18 @@ export default async function HomePage() {
   const servings = await getAllServings();
 
   return (
-    <div className="space-y-6">
-      <NavbarFilters
-        categories={categories}
-        cuisines={cuisines}
-        difficulties={difficulties}
-        servings={servings}
-      />
-      <FilteredRecipeList />
+    <div className="flex space-x-6 p-4">
+      <div className="w-64">
+        <NavbarFilters
+          categories={categories}
+          cuisines={cuisines}
+          difficulties={difficulties}
+          servings={servings}
+        />
+      </div>
+      <div className="flex-1">
+        <FilteredRecipeList />
+      </div>
     </div>
   );
 }

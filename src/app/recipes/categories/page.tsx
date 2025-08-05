@@ -29,7 +29,7 @@ export default function CategoriesPage() {
   }, []);
 
   return (
-    <div className="text-center my-8">
+    <div className="text-center my-8 text-gray-800">
       <h1>Categories Page</h1>
       <p>Choose a category</p>
 

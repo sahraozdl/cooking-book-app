@@ -10,9 +10,10 @@ import {
   getUserFollowing,
 } from "@/app/lib/firebase/firestoreUser";
 import { useUser } from "@/store/UserContext";
-import EntryCard from "@/components/EntryCard";
 import { UserTypes, RecipeWithID } from "@/types";
 import { getUserPublicRecipes } from "@/app/actions/firestoreRecipeActions";
+import RecipeList from "@/components/RecipeList";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 export default function UserProfilePage() {
   const { user } = useUser();
@@ -68,36 +69,20 @@ export default function UserProfilePage() {
   if (!targetUser) return <div className="p-4">Loading profile...</div>;
 
   return (
-    <div className="p-4 max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{targetUser.name}</h1>
-        <p className="text-gray-600">{targetUser.email}</p>
-
-        {user && user.id !== userId && (
-          <button
-            onClick={handleFollowToggle}
-            className="btn mt-2 bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            {isFollowing ? "Unfollow" : "Follow"}
-          </button>
-        )}
+    <div className="p-4 max-w-3xl mx-auto space-y-6 text-gray-900">
+      <div className="flex flex-row justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">{targetUser.name}</h1>
+          <p className="text-gray-900">{targetUser.email}</p>
+        </div>
+        <div>
+          {user && user.id !== userId && (
+            <PrimaryButton onClick={handleFollowToggle}>
+              {isFollowing ? "Unfollow" : "Follow"}
+            </PrimaryButton>
+          )}
+        </div>
       </div>
-
-      <div>
-        <h2 className="text-xl font-semibold mb-2">
-          Recipes by {targetUser.name}
-        </h2>
-        {recipes.length > 0 ? (
-          <div className="space-y-4">
-            {recipes.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500">No recipes found.</p>
-        )}
-      </div>
-
       <div>
         <h2 className="text-xl font-semibold mt-6">
           Followers: {followers.length}
@@ -118,6 +103,12 @@ export default function UserProfilePage() {
             <li key={f.id}>{f.name}</li>
           ))}
         </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-semibold mb-2">
+          Recipes by {targetUser.name}
+        </h2>
+        <RecipeList recipes={recipes} editable={false} />
       </div>
     </div>
   );

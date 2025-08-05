@@ -1,27 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {  useRouter } from "next/navigation";
-import { auth } from "@/app/lib/firebase/config";
-import { onAuthStateChanged, User } from "firebase/auth";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signOutUser } from "@/app/lib/firebase/auth";
-
 import ProtectedContent from "./ProtectedContent";
+import { useUser } from "@/store/UserContext";
+import {DotsThreeIcon, XIcon,ChefHatIcon} from "@phosphor-icons/react"
 
 export const Navbar = () => {
+  const { user, setUser } = useUser();
   const router = useRouter();
-
-  const [user, setUser] = useState<User | null>(null);
-
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await signOutUser();
@@ -29,74 +19,83 @@ export const Navbar = () => {
     router.push("/");
   };
 
+  const navLinks = (
+    <>
+      <li>
+        <Link href="/" className="hover:underline">
+          Home
+        </Link>
+      </li>
+      <ProtectedContent>
+        <li>
+          <Link href="/dashboard" className="hover:underline">
+            Dashboard
+          </Link>
+        </li>
+      </ProtectedContent>
+      <ProtectedContent>
+        <li>
+          <Link href="/recipes/new" className="hover:underline">
+            New Recipe
+          </Link>
+        </li>
+      </ProtectedContent>
+      <li>
+        <Link href="/recipes/categories" className="hover:underline">
+          Categories
+        </Link>
+      </li>
+      {user ? (
+        <>
+          <ProtectedContent>
+            <li>
+              <Link href="/profile" className="hover:underline">
+                Profile
+              </Link>
+            </li>
+          </ProtectedContent>
+          <li>
+            <button onClick={handleLogout} className="hover:underline">
+              Logout
+            </button>
+          </li>
+        </>
+      ) : (
+        <li>
+          <Link href="/login" className="hover:underline">
+            Login
+          </Link>
+        </li>
+      )}
+    </>
+  );
+
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex justify-between items-center w-full md:w-auto">
-          <h1 className="text-white text-xl">Cooking Book App</h1>
-          <ul className="flex space-x-4 ml-6">
-            <li>
-              <Link href="/" className="text-white hover:underline">
-                Home
-              </Link>
-            </li>
-            <li>
-              <ProtectedContent>
-                <Link href="/dashboard" className="text-white hover:underline">
-                  Dashboard
-                </Link>
-              </ProtectedContent>
-            </li>
-            <li>
-              <ProtectedContent>
-                <Link
-                  href="/recipes/new"
-                  className="text-white hover:underline"
-                >
-                  New Recipe
-                </Link>
-              </ProtectedContent>
-            </li>
-            <li>
-              <Link
-                href="/recipes/categories"
-                className="text-white hover:underline"
-              >
-                Categories
-              </Link>
-            </li>
-            {user ? (
-              <>
-                <li>
-                  <ProtectedContent>
-                    <Link
-                      href="/profile"
-                      className="text-white hover:underline"
-                    >
-                      Profile
-                    </Link>
-                  </ProtectedContent>
-                </li>
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="text-white hover:underline"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <li>
-                <Link href="/login" className="text-white hover:underline">
-                  Login
-                </Link>
-              </li>
-            )}
-            
-          </ul>
-        </div>
+    <nav className="bg-orange-300 text-red-950 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+        <h1 className="text-lg font-bold"><ChefHatIcon size={32} weight="bold" className="inline"/> Cooking Book App</h1>
+
+        {/* Desktop nav */}
+        <ul className="hidden md:flex space-x-6 text-sm items-center">
+          {navLinks}
+        </ul>
+
+        {/* Mobile menu toggle */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden text-orange-700"
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? <XIcon size={32} /> : <DotsThreeIcon size={32} />}
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {isMenuOpen && (
+        <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">
+          {navLinks}
+        </ul>
+      )}
     </nav>
   );
 };
