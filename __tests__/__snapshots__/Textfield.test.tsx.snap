@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Textfield component matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col my-4 text-black"
+    data-headlessui-state=""
+  >
+    <label
+      class="mb-1 text-sm font-semibold text-orange-700"
+      data-headlessui-state=""
+      for="pwd"
+      id="headlessui-label-«ra»"
+    >
+      Password
+    </label>
+    <input
+      aria-labelledby="headlessui-label-«ra»"
+      class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition bg-white border-orange-300"
+      data-headlessui-state=""
+      id="pwd"
+      name="pwd"
+      type="text"
+    />
+    <span
+      hidden=""
+      style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px; display: none;"
+    />
+  </div>
+</DocumentFragment>
+`;

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Footer matches snapshot 1`] = `
+<DocumentFragment>
+  <footer
+    class="bg-orange-300 p-4"
+  >
+    <p
+      class="text-center text-red-950"
+    >
+      © 2025 Cooking Book App. All rights reserved.
+    </p>
+  </footer>
+</DocumentFragment>
+`;

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`PrimaryButton matches snapshot 1`] = `
+<DocumentFragment>
+  <button
+    class="px-4 py-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition disabled:opacity-50 cursor-pointer focus:outline-orange-800"
+    data-headlessui-state=""
+    type="button"
+  >
+    Snapshot
+  </button>
+</DocumentFragment>
+`;
