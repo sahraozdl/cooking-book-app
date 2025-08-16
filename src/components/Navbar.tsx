@@ -75,12 +75,10 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
         <h1 className="text-lg font-bold"><ChefHatIcon size={32} weight="bold" className="inline"/> Cooking Book App</h1>
 
-        {/* Desktop nav */}
         <ul className="hidden md:flex space-x-6 text-sm items-center">
           {navLinks}
         </ul>
 
-        {/* Mobile menu toggle */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="md:hidden text-orange-700"
@@ -90,7 +88,6 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
         <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">
           {navLinks}
