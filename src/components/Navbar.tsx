@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signOutUser } from "@/app/lib/firebase/auth";
-import ProtectedContent from "./ProtectedContent";
-import { useUser } from "@/store/UserContext";
-import {DotsThreeIcon, XIcon,ChefHatIcon} from "@phosphor-icons/react"
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signOutUser } from '@/app/lib/firebase/auth';
+import ProtectedContent from './ProtectedContent';
+import { useUser } from '@/store/UserContext';
+import { DotsThreeIcon, XIcon, ChefHatIcon } from '@phosphor-icons/react';
 
 export const Navbar = () => {
   const { user, setUser } = useUser();
@@ -16,7 +16,7 @@ export const Navbar = () => {
   const handleLogout = async () => {
     await signOutUser();
     setUser(null);
-    router.push("/");
+    router.push('/');
   };
 
   const navLinks = (
@@ -73,12 +73,12 @@ export const Navbar = () => {
   return (
     <nav className="bg-orange-300 text-red-950 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
-        <h1 className="text-lg font-bold"><ChefHatIcon size={32} weight="bold" className="inline"/> Cooking Book App</h1>
+        <h1 className="text-lg font-bold">
+          <ChefHatIcon size={32} weight="bold" className="inline" /> Cooking Book App
+        </h1>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex space-x-6 text-sm items-center">
-          {navLinks}
-        </ul>
+        <ul className="hidden md:flex space-x-6 text-sm items-center">{navLinks}</ul>
 
         {/* Mobile menu toggle */}
         <button
@@ -91,11 +91,7 @@ export const Navbar = () => {
       </div>
 
       {/* Mobile menu */}
-      {isMenuOpen && (
-        <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">
-          {navLinks}
-        </ul>
-      )}
+      {isMenuOpen && <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">{navLinks}</ul>}
     </nav>
   );
 };

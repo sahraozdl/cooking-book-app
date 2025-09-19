@@ -1,19 +1,17 @@
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/app/lib/firebase/config";
-import { RecipeWithID } from "@/types";
-import EntryCard from "@/components/EntryCard";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/app/lib/firebase/config';
+import { RecipeWithID } from '@/types';
+import EntryCard from '@/components/EntryCard';
 
 interface CategoryRecipesPageProps {
   params: { id: string };
 }
-export default async function CategoryRecipesPage({
-  params,
-}: CategoryRecipesPageProps) {
+export default async function CategoryRecipesPage({ params }: CategoryRecipesPageProps) {
   const { id: categoryId } = params;
 
   const recipesQuery = query(
-    collection(db, "recipes"),
-    where("categoryIds", "array-contains", categoryId)
+    collection(db, 'recipes'),
+    where('categoryIds', 'array-contains', categoryId)
   );
 
   const querySnapshot = await getDocs(recipesQuery);
@@ -22,7 +20,7 @@ export default async function CategoryRecipesPage({
     const data = doc.data();
     return {
       id: doc.id,
-      ...(data as Omit<RecipeWithID, "id">),
+      ...(data as Omit<RecipeWithID, 'id'>),
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate(),
     };

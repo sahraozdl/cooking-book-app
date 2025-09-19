@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/app/lib/firebase/config";
-import Image from "next/image";
-import Link from "next/link";
-import { Category } from "@/types";
+import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/app/lib/firebase/config';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Category } from '@/types';
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     async function fetchCategoriesFromFirestore() {
       try {
-        const querySnapshot = await getDocs(collection(db, "categories"));
+        const querySnapshot = await getDocs(collection(db, 'categories'));
         const categoryList: Category[] = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
         })) as Category[];
@@ -21,7 +21,7 @@ export default function CategoriesPage() {
 
         setCategories(categoryList);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error('Error fetching categories:', error);
       }
     }
 

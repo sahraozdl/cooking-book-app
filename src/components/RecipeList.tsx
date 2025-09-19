@@ -1,6 +1,6 @@
-import React from "react";
-import EntryCard from "./EntryCard";
-import { RecipeWithID } from "@/types";
+import React from 'react';
+import EntryCard from './EntryCard';
+import { RecipeWithID } from '@/types';
 
 interface RecipeListProps {
   recipes: RecipeWithID[];

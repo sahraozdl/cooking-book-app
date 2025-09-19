@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Listbox,
@@ -7,8 +7,8 @@ import {
   ListboxOptions,
   Field,
   Label,
-} from "@headlessui/react";
-import { Fragment } from "react";
+} from '@headlessui/react';
+import { Fragment } from 'react';
 
 export type Option = { id: string; name: string };
 type DropdownProps<T extends boolean = false> = {
@@ -43,9 +43,7 @@ export default function Dropdown<T extends boolean = false>({
 
   return (
     <Field className="flex flex-col my-4">
-      <Label className="mb-1 text-sm font-semibold text-orange-700">
-        {label}
-      </Label>
+      <Label className="mb-1 text-sm font-semibold text-orange-700">{label}</Label>
       <Listbox value={selected} onChange={setSelected} multiple={multiple}>
         <div className="relative">
           <ListboxButton className="border border-orange-300 p-2 rounded bg-white w-full text-left text-gray-900 min-h-[42px] flex flex-wrap gap-2 hover:ring-2 hover:ring-orange-400 transition focus:outline-orange-400">
@@ -65,7 +63,7 @@ export default function Dropdown<T extends boolean = false>({
                       removeItem(item.id);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
+                      if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         removeItem(item.id);
                       }
@@ -89,8 +87,8 @@ export default function Dropdown<T extends boolean = false>({
                 {({ active }) => (
                   <li
                     className={`cursor-pointer px-4 py-2 ${
-                      isSelected(option) ? "bg-orange-300 font-semibold" : ""
-                    } ${active ? "bg-orange-100" : ""}`}
+                      isSelected(option) ? 'bg-orange-300 font-semibold' : ''
+                    } ${active ? 'bg-orange-100' : ''}`}
                   >
                     {option.name}
                   </li>

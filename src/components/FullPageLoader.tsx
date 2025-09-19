@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { FireIcon } from "@phosphor-icons/react"
-import React from "react";
+import { FireIcon } from '@phosphor-icons/react';
+import React from 'react';
 
 const FullPageLoader = () => {
   return (

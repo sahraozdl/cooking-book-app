@@ -1,18 +1,15 @@
-"use client";
+'use client';
 
-import React, { ReactNode, useEffect } from "react";
-import { useUser } from "../store/UserContext";
-import { useRouter } from "next/navigation";
+import React, { ReactNode, useEffect } from 'react';
+import { useUser } from '../store/UserContext';
+import { useRouter } from 'next/navigation';
 
 interface ProtectedRouteProps {
   children: ReactNode;
   redirectPath?: string;
 }
 
-export default function ProtectedRoute({
-  children,
-  redirectPath = "/login",
-}: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, redirectPath = '/login' }: ProtectedRouteProps) {
   const { user, loading } = useUser();
   const router = useRouter();
 
