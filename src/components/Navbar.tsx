@@ -77,10 +77,7 @@ export const Navbar = () => {
           <ChefHatIcon size={32} weight="bold" className="inline" /> Cooking Book App
         </h1>
 
-        <ul className="hidden md:flex space-x-6 text-sm items-center">
-          {navLinks}
-        </ul>
-
+        <ul className="hidden md:flex space-x-6 text-sm items-center">{navLinks}</ul>
 
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -91,12 +88,7 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {isMenuOpen && (
-        <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">
-          {navLinks}
-        </ul>
-      )}
-
+      {isMenuOpen && <ul className="md:hidden px-6 pb-4 space-y-3 text-sm">{navLinks}</ul>}
     </nav>
   );
 };

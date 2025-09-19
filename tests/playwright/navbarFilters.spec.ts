@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test("NavbarFilters renders and allows interaction", async ({ page }) => {
+test('NavbarFilters renders and allows interaction', async ({ page }) => {
   await page.setContent(`
     <div data-testid="navbar-filters">
       <label>
@@ -11,14 +11,14 @@ test("NavbarFilters renders and allows interaction", async ({ page }) => {
       </label>
     </div>
   `);
-  const filterSection = page.getByTestId("navbar-filters");
+  const filterSection = page.getByTestId('navbar-filters');
   await expect(filterSection).toBeVisible();
 
-  const breakfastCheckbox = page.getByLabel("Breakfast");
+  const breakfastCheckbox = page.getByLabel('Breakfast');
   await breakfastCheckbox.check();
   await expect(breakfastCheckbox).toBeChecked();
 
-  const lunchCheckbox = page.getByLabel("Lunch");
+  const lunchCheckbox = page.getByLabel('Lunch');
   await lunchCheckbox.check();
-  await expect(lunchCheckbox).toBeChecked()
+  await expect(lunchCheckbox).toBeChecked();
 });

@@ -26,10 +26,7 @@ export default function EditModal({ isOpen, onClose, title = 'Edit', children }:
             ×
           </button>
 
-          <DialogTitle className="text-xl font-semibold text-orange-600 mb-4">
-            {title}
-          </DialogTitle>
-
+          <DialogTitle className="text-xl font-semibold text-orange-600 mb-4">{title}</DialogTitle>
 
           {children}
         </DialogPanel>

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watch",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
   },
@@ -33,6 +33,7 @@
     "@types/node": "^20",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "babel-jest": "^30.1.2",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",

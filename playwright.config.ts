@@ -1,11 +1,11 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: './tests',
   timeout: 30000,
   use: {
-    baseURL: "http://localhost:3000",
-    headless: true, 
+    baseURL: 'http://localhost:3000',
+    headless: true,
     viewport: { width: 1280, height: 720 },
     actionTimeout: 10000,
     ignoreHTTPSErrors: true,

@@ -125,8 +125,10 @@ export default function NavbarFilters({
   );
 
   return (
-    <div data-testid="navbar-filters" className="w-full max-w-xs md:max-w-none md:w-64 p-2 bg-orange-50 rounded-md shadow-sm">
-
+    <div
+      data-testid="navbar-filters"
+      className="w-full max-w-xs md:max-w-none md:w-64 p-2 bg-orange-50 rounded-md shadow-sm"
+    >
       <Menu as="div" className="relative text-left w-full">
         <div>
           <MenuButton className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-red-900 bg-orange-300 rounded-md hover:bg-orange-400 focus:outline-none focus:ring focus:ring-orange-500 focus:ring-offset-2 cursor-pointer">
