@@ -9,12 +9,10 @@ on:
 
 jobs:
   tests:
-    name: Run All Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -23,6 +21,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install
 
       - name: Run Jest unit/component tests
         run: npx jest --ci --testPathPatterns=__tests__
