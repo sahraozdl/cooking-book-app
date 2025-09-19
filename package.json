@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watchAll",
+    "test": "jest",
     "test:ci": "jest --ci",
+    "test:watch": "jest --watchAll",
     "test:e2e": "npx playwright test",
     "format:check": "prettier --check .",
     "format": "prettier --write ."
