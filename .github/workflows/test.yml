@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Run Jest unit/component tests
-        run: npx jest --ci --testPathPattern=__tests__
+        run: npx jest --ci --testPathPatterns=__tests__
 
       - name: Run Playwright E2E tests
         run: npx playwright test .tests/playwright
