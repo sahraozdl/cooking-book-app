@@ -1,27 +1,24 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import {
-  toggleRecipeLike,
-  toggleRecipeSave,
-} from "@/app/actions/firestoreRecipeActions";
-import { useUser } from "@/store/UserContext";
-import { RecipeWithID } from "@/types";
-import EditModal from "@/components/EditModal";
-import NewRecipeForm from "@/components/forms/NewRecipeForm";
-import ActionIconButton from "@/components/buttons/ActionIconButton";
-import PrimaryButton from "@/components/buttons/PrimaryButton";
-import SecondaryButton from "@/components/buttons/SecondaryButton";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { toggleRecipeLike, toggleRecipeSave } from '@/app/actions/firestoreRecipeActions';
+import { useUser } from '@/store/UserContext';
+import { RecipeWithID } from '@/types';
+import EditModal from '@/components/EditModal';
+import NewRecipeForm from '@/components/forms/NewRecipeForm';
+import ActionIconButton from '@/components/buttons/ActionIconButton';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
+import SecondaryButton from '@/components/buttons/SecondaryButton';
 import {
   HeartIcon,
   StarIcon,
   BowlFoodIcon,
   ClockCountdownIcon,
   GlobeHemisphereEastIcon,
-} from "@phosphor-icons/react";
+} from '@phosphor-icons/react';
 
 interface EntryCardProps {
   entry: RecipeWithID;
@@ -58,23 +55,23 @@ export default function EntryCard({
     setSaved(entry.savedBy?.includes(userId) ?? false);
   }, [entry, userId]);
 
-  const handleToggle = async (type: "like" | "save") => {
+  const handleToggle = async (type: 'like' | 'save') => {
     if (!userId) {
-      router.push("/login");
+      router.push('/login');
       return;
     }
     if (!entry.id) return;
 
-    const toggler = type === "like" ? toggleRecipeLike : toggleRecipeSave;
-    const currentState = type === "like" ? liked : saved;
+    const toggler = type === 'like' ? toggleRecipeLike : toggleRecipeSave;
+    const currentState = type === 'like' ? liked : saved;
     const newState = !currentState;
 
     try {
-      if (type === "like") setLiked(newState);
+      if (type === 'like') setLiked(newState);
       else setSaved(newState);
 
-      const countKey = type === "like" ? "likeCount" : "saveCount";
-      const byKey = type === "like" ? "likedBy" : "savedBy";
+      const countKey = type === 'like' ? 'likeCount' : 'saveCount';
+      const byKey = type === 'like' ? 'likedBy' : 'savedBy';
 
       entry[countKey] = Math.max(
         (entry[countKey] ?? entry[byKey]?.length ?? 0) + (newState ? 1 : -1),
@@ -88,7 +85,7 @@ export default function EntryCard({
       await toggler(entry.id, userId);
     } catch (error) {
       console.error(`Failed to toggle ${type}:`, error);
-      if (type === "like") setLiked(currentState);
+      if (type === 'like') setLiked(currentState);
       else setSaved(currentState);
     }
   };
@@ -108,33 +105,31 @@ export default function EntryCard({
 
         <div className="flex-1 space-y-2">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-  <h3 className="text-lg font-semibold">{entry.strMeal}</h3>
+            <h3 className="text-lg font-semibold">{entry.strMeal}</h3>
 
-  <div className="flex flex-row flex-wrap gap-4 text-xs text-gray-500 min-w-1/6">
-    <div className="flex items-center gap-1">
-      <BowlFoodIcon size={16} />
-      <span>{entry.servingsId?.name}</span>
-    </div>
-    <div className="flex items-center gap-1">
-      <ClockCountdownIcon size={16} />
-      <span>{entry.difficultyId?.name}</span>
-    </div>
-    <div className="flex items-center gap-1">
-      <GlobeHemisphereEastIcon size={16} />
-      <span>{entry.cuisineId?.name}</span>
-    </div>
-  </div>
-</div>
+            <div className="flex flex-row flex-wrap gap-4 text-xs text-gray-500 min-w-1/6">
+              <div className="flex items-center gap-1">
+                <BowlFoodIcon size={16} />
+                <span>{entry.servingsId?.name}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <ClockCountdownIcon size={16} />
+                <span>{entry.difficultyId?.name}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <GlobeHemisphereEastIcon size={16} />
+                <span>{entry.cuisineId?.name}</span>
+              </div>
+            </div>
+          </div>
 
-          <p className="text-sm text-gray-600 line-clamp-3">
-            {entry.strInstructions}
-          </p>
+          <p className="text-sm text-gray-600 line-clamp-3">{entry.strInstructions}</p>
 
           {showAuthor && entry.authorId && (
             <p className="text-sm">
-              By:{" "}
+              By:{' '}
               {entry.isAnonymous ? (
-                "Anonymous"
+                'Anonymous'
               ) : (
                 <Link
                   href={`/profile/${entry.authorId}`}
@@ -149,7 +144,7 @@ export default function EntryCard({
           <div className="flex flex-wrap gap-3 items-center">
             <ActionIconButton
               active={liked}
-              onClick={() => handleToggle("like")}
+              onClick={() => handleToggle('like')}
               icon={<HeartIcon size={16} />}
               activeIcon={<HeartIcon size={16} weight="fill" />}
               label="Like "
@@ -158,7 +153,7 @@ export default function EntryCard({
 
             <ActionIconButton
               active={saved}
-              onClick={() => handleToggle("save")}
+              onClick={() => handleToggle('save')}
               icon={<StarIcon size={16} />}
               activeIcon={<StarIcon size={16} weight="fill" />}
               label="Save"
@@ -174,11 +169,9 @@ export default function EntryCard({
 
             {editable && (
               <div className="flex flex-wrap gap-2 ml-2">
-                <PrimaryButton onClick={() => setShowEditModal(true)}>
-                  Edit
-                </PrimaryButton>
+                <PrimaryButton onClick={() => setShowEditModal(true)}>Edit</PrimaryButton>
                 <SecondaryButton onClick={onDelete} disabled={isDeleting}>
-                  {isDeleting ? "Deleting..." : "Delete"}
+                  {isDeleting ? 'Deleting...' : 'Delete'}
                 </SecondaryButton>
               </div>
             )}
@@ -192,10 +185,7 @@ export default function EntryCard({
           onClose={() => setShowEditModal(false)}
           title="Edit Recipe"
         >
-          <NewRecipeForm
-            recipe={entry}
-            onClose={() => setShowEditModal(false)}
-          />
+          <NewRecipeForm recipe={entry} onClose={() => setShowEditModal(false)} />
         </EditModal>
       )}
     </div>

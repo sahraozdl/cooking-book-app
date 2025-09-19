@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { recipeSchema } from "@/app/actions/schema";
+import { z } from 'zod';
+import { recipeSchema } from '@/app/actions/schema';
 
 export type RecipeSchemaType = z.infer<typeof recipeSchema>;
 

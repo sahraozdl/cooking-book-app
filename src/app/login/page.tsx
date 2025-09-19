@@ -1,58 +1,54 @@
-"use client";
-import { useState } from "react";
-import {
-  signUpUser,
-  signInUser,
-  signInWithGoogle,
-} from "@/app/lib/firebase/auth";
-import { useRouter } from "next/navigation";
+'use client';
+import { useState } from 'react';
+import { signUpUser, signInUser, signInWithGoogle } from '@/app/lib/firebase/auth';
+import { useRouter } from 'next/navigation';
 
 export default function AuthForm() {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const toggleForm = () => {
     setIsSignUp((prev) => !prev);
-    setError("");
+    setError('');
   };
 
   const handleGoogleSignIn = async () => {
-    setError("");
+    setError('');
     try {
       await signInWithGoogle();
-      router.push("/dashboard");
+      router.push('/dashboard');
     } catch (err) {
-      setError("Google Sign-In failed. Please try again.");
+      setError('Google Sign-In failed. Please try again.');
     }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
-    setError("");
+    setError('');
 
     try {
       if (isSignUp) {
         const user = await signUpUser(formData);
         if (user?.errors) {
           setError(
-            `Invalid input:\n${user.errors.name?.join(", ") ?? ""}\n${
-              user.errors.email?.join(", ") ?? ""
-            }\n${user.errors.password?.join(", ") ?? ""}`
+            `Invalid input:\n${user.errors.name?.join(', ') ?? ''}\n${
+              user.errors.email?.join(', ') ?? ''
+            }\n${user.errors.password?.join(', ') ?? ''}`
           );
           return;
         }
       } else {
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
         await signInUser({ email, password });
       }
 
-      router.push("/dashboard");
+      router.push('/dashboard');
     } catch (err) {
-      console.error("Error:", err);
-      setError("Authentication failed. Please try again.");
+      console.error('Error:', err);
+      setError('Authentication failed. Please try again.');
     }
   };
 
@@ -61,12 +57,10 @@ export default function AuthForm() {
       <div className="bg-white rounded-lg p-10 relative z-10 w-full max-w-md mx-auto">
         <form onSubmit={handleSubmit} className="text-black">
           <h2 className="text-2xl font-bold mb-4 text-center">
-            {isSignUp ? "Sign Up" : "Sign In"}
+            {isSignUp ? 'Sign Up' : 'Sign In'}
           </h2>
 
-          {error && (
-            <p className="text-red-600 whitespace-pre-line mb-4">{error}</p>
-          )}
+          {error && <p className="text-red-600 whitespace-pre-line mb-4">{error}</p>}
 
           {isSignUp && (
             <div className="mb-4">
@@ -102,21 +96,14 @@ export default function AuthForm() {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 bg-gray-800 text-white rounded"
-          >
-            {isSignUp ? "Sign Up" : "Sign In"}
+          <button type="submit" className="w-full py-2 bg-gray-800 text-white rounded">
+            {isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
 
           <p className="mt-4 text-center text-sm text-gray-700">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-            <button
-              type="button"
-              onClick={toggleForm}
-              className="text-blue-600 underline"
-            >
-              {isSignUp ? "Sign In" : "Sign Up"}
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+            <button type="button" onClick={toggleForm} className="text-blue-600 underline">
+              {isSignUp ? 'Sign In' : 'Sign Up'}
             </button>
           </p>
 

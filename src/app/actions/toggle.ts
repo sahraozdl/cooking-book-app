@@ -1,14 +1,14 @@
-import { doc, getDoc, writeBatch, arrayUnion, arrayRemove } from "firebase/firestore";
-import { db } from "@/app/lib/firebase/config";
+import { doc, getDoc, writeBatch, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { db } from '@/app/lib/firebase/config';
 
 export async function toggleRecipeLike(recipeId: string, userId: string) {
-  const recipeRef = doc(db, "recipes", recipeId);
-  const userRef = doc(db, "users", userId);
+  const recipeRef = doc(db, 'recipes', recipeId);
+  const userRef = doc(db, 'users', userId);
   const batch = writeBatch(db);
 
   const recipeSnap = await getDoc(recipeRef);
   const userSnap = await getDoc(userRef);
-  if (!recipeSnap.exists() || !userSnap.exists()) throw new Error("Recipe or user not found.");
+  if (!recipeSnap.exists() || !userSnap.exists()) throw new Error('Recipe or user not found.');
 
   const recipeData = recipeSnap.data();
   const likedBy: string[] = recipeData.likedBy || [];
@@ -36,19 +36,20 @@ export async function toggleRecipeLike(recipeId: string, userId: string) {
 }
 
 export async function toggleRecipeSave(recipeId: string, userId: string) {
-  const recipeRef = doc(db, "recipes", recipeId);
-  const userRef = doc(db, "users", userId);
+  const recipeRef = doc(db, 'recipes', recipeId);
+  const userRef = doc(db, 'users', userId);
   const batch = writeBatch(db);
 
   const recipeSnap = await getDoc(recipeRef);
   const userSnap = await getDoc(userRef);
-  if (!recipeSnap.exists() || !userSnap.exists()) throw new Error("Recipe or user not found.");
+  if (!recipeSnap.exists() || !userSnap.exists()) throw new Error('Recipe or user not found.');
 
   const recipeData = recipeSnap.data();
   const savedBy: string[] = recipeData.savedBy || [];
   const alreadySaved = savedBy.includes(userId);
 
-  const saveCount = typeof recipeData.likeCount === "number" ? recipeData.saveCount : savedBy.length;
+  const saveCount =
+    typeof recipeData.likeCount === 'number' ? recipeData.saveCount : savedBy.length;
 
   if (alreadySaved) {
     batch.update(recipeRef, {

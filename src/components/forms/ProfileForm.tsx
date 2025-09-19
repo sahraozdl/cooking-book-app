@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from "react";
 import { useActionState } from "react";
@@ -7,6 +7,7 @@ import { UserTypes } from "@/types";
 import { Field, Label, Input, Description } from "@headlessui/react";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
+
 
 export interface Props {
   user: UserTypes;
@@ -19,7 +20,7 @@ type ProfileFormState = {
   message: string;
 };
 
-const initialState: ProfileFormState = { success: false, message: "" };
+const initialState: ProfileFormState = { success: false, message: '' };
 
 export default function ProfileForm({ user, onClose, onSuccess }: Props) {
   const [state, action, isPending] = useActionState<ProfileFormState, FormData>(
@@ -93,6 +94,7 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
         <p
           role="status"
           className={`text-sm mt-1 ${state.success ? "text-green-600" : "text-red-500"}`}
+
         >
           {state.message}
         </p>
@@ -103,7 +105,7 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
           Cancel
         </SecondaryButton>
         <PrimaryButton type="submit" disabled={isPending}>
-          {isPending ? "Saving..." : "Save"}
+          {isPending ? 'Saving...' : 'Save'}
         </PrimaryButton>
       </div>
     </form>

@@ -1,15 +1,15 @@
-"use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { UserTypes } from "@/types";
-import { doc, getDoc } from "firebase/firestore";
-import { db, auth } from "@/app/lib/firebase/config";
+'use client';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { UserTypes } from '@/types';
+import { doc, getDoc } from 'firebase/firestore';
+import { db, auth } from '@/app/lib/firebase/config';
 
 interface IUserContext {
   user: UserTypes | null;
   loading: boolean;
-  errors: UserTypes["errors"] | null;
-  setError: React.Dispatch<React.SetStateAction<UserTypes["errors"] | null>>;
+  errors: UserTypes['errors'] | null;
+  setError: React.Dispatch<React.SetStateAction<UserTypes['errors'] | null>>;
   setUser: React.Dispatch<React.SetStateAction<UserTypes | null>>;
 }
 
@@ -21,19 +21,17 @@ const UserContext = createContext<IUserContext>({
   setUser: () => {},
 });
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserTypes | null>(null);
   const [loading, setLoading] = useState(true);
-  const [errors, setError] = useState<UserTypes["errors"] | null>(null);
+  const [errors, setError] = useState<UserTypes['errors'] | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
       async (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
-          const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
           const userData = userDoc.exists() ? userDoc.data() : {};
           setUser({
             id: firebaseUser.uid,
@@ -52,7 +50,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         setError(null);
       },
       (firebaseError) => {
-        console.error("Firebase auth error:", firebaseError);
+        console.error('Firebase auth error:', firebaseError);
         setError({
           email: [firebaseError.message],
           name: undefined,
@@ -78,7 +76,7 @@ export const useUser = () => {
 
   const refreshUser = async () => {
     if (!user?.id) return;
-    const userDoc = await getDoc(doc(db, "users", user.id));
+    const userDoc = await getDoc(doc(db, 'users', user.id));
     if (userDoc.exists()) {
       const userData = userDoc.data();
       setUser((prev) => ({

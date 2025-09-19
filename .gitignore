@@ -10,12 +10,16 @@
 !.yarn/releases
 !.yarn/versions
 
+# Playwright test results
+test-results/
+
 # testing
 /coverage
 
 # next.js
 /.next/
 /out/
+.build/
 
 # production
 /build

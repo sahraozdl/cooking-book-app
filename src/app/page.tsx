@@ -1,6 +1,11 @@
-import NavbarFilters from "@/components/NavbarFilters";
-import FilteredRecipeList from "@/components/FilteredRecipeList";
-import { getAllCategories, getAllCuisines, getAllDifficulties, getAllServings } from "@/app/lib/firebase/dataFetchers";
+import NavbarFilters from '@/components/NavbarFilters';
+import FilteredRecipeList from '@/components/FilteredRecipeList';
+import {
+  getAllCategories,
+  getAllCuisines,
+  getAllDifficulties,
+  getAllServings,
+} from '@/app/lib/firebase/dataFetchers';
 
 export default async function HomePage() {
   const categories = await getAllCategories();

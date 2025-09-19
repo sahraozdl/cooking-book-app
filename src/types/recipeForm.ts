@@ -6,15 +6,15 @@ export interface RecipeFormData {
   categories?: { id: string; name: string }[];
   categoryIds?: string[];
   cuisineId?: {
-  id: string;
-  name: string;
-};
+    id: string;
+    name: string;
+  };
   strMeal: string;
   strInstructions: string;
   strMealThumb: string;
   difficultyId?: { id: string; name: string };
   ingredients: Ingredient[];
- servingsId?: { id: string; name: string };
+  servingsId?: { id: string; name: string };
   authorId: string;
   authorName?: string;
   isAnonymous?: boolean;
@@ -22,7 +22,7 @@ export interface RecipeFormData {
   savedBy?: string[];
   likeCount?: number;
   saveCount?: number;
-  visibility: "public" | "private";
+  visibility: 'public' | 'private';
   createdAt: {
     seconds: number;
     nanoseconds: number;

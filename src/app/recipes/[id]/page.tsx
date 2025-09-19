@@ -1,9 +1,9 @@
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/app/lib/firebase/config";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Category, Cuisine, Difficulty, RecipeWithID } from "@/types";
-import { getCategoriesByIds } from "@/app/actions/firestoreRecipeActions";
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/app/lib/firebase/config';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
+import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
 interface RecipeDetailsPageProps {
   params: { id: string };
@@ -12,8 +12,7 @@ interface RecipeDetailsPageProps {
 export default async function RecipeDetailsPage({ params }: RecipeDetailsPageProps) {
   const { id } = params;
 
-
-  const recipeRef = doc(db, "recipes", id);
+  const recipeRef = doc(db, 'recipes', id);
   const recipeSnap = await getDoc(recipeRef);
   if (!recipeSnap.exists()) return notFound();
 
@@ -22,34 +21,29 @@ export default async function RecipeDetailsPage({ params }: RecipeDetailsPagePro
     ...recipeSnap.data(),
   } as RecipeWithID;
 
- 
-  const getId = (val?: string | { id?: string }) =>
-    typeof val === "string" ? val : val?.id;
+  const getId = (val?: string | { id?: string }) => (typeof val === 'string' ? val : val?.id);
 
- 
   let difficulty: Difficulty | null = null;
   const difficultyId = getId(recipe.difficultyId);
   if (difficultyId) {
-    const diffSnap = await getDoc(doc(db, "difficulties", difficultyId));
+    const diffSnap = await getDoc(doc(db, 'difficulties', difficultyId));
     if (diffSnap.exists()) {
       difficulty = { id: diffSnap.id, ...diffSnap.data() } as Difficulty;
     }
   }
 
-
   let cuisine: Cuisine | null = null;
   const cuisineId = getId(recipe.cuisineId);
   if (cuisineId) {
-    const cuisineSnap = await getDoc(doc(db, "cuisines", cuisineId));
+    const cuisineSnap = await getDoc(doc(db, 'cuisines', cuisineId));
     if (cuisineSnap.exists()) {
       cuisine = { id: cuisineSnap.id, ...cuisineSnap.data() } as Cuisine;
     }
   }
 
-
   let categories: Category[] = [];
   if (Array.isArray(recipe.categories) && recipe.categories.length > 0) {
-    const categoryIds = recipe.categories.map((cat) => getId(cat) ?? "");
+    const categoryIds = recipe.categories.map((cat) => getId(cat) ?? '');
     categories = await getCategoriesByIds(categoryIds.filter(Boolean));
   }
 
@@ -72,15 +66,12 @@ export default async function RecipeDetailsPage({ params }: RecipeDetailsPagePro
 
         {categories.length > 0 && (
           <p>
-            <strong>Categories:</strong>{" "}
-            {categories.map((cat) => cat.name).join(", ")}
+            <strong>Categories:</strong> {categories.map((cat) => cat.name).join(', ')}
           </p>
         )}
       </div>
 
-
       <div className="flex flex-col md:flex-row md:space-x-8 ">
-
         <div className="w-full md:w-1/2 max-w-xs md:max-w-full mx-auto mb-2 md:mb-0 ">
           {recipe.strMealThumb ? (
             <Image
@@ -92,7 +83,6 @@ export default async function RecipeDetailsPage({ params }: RecipeDetailsPagePro
               priority
             />
           ) : (
-
             <div className="bg-gray-200  rounded w-full aspect-square" />
           )}
         </div>
@@ -117,7 +107,7 @@ export default async function RecipeDetailsPage({ params }: RecipeDetailsPagePro
 
       {recipe.authorName && (
         <p className="mt-6 text-sm sm:text-base text-gray-700">
-          <strong>Author:</strong> {recipe.isAnonymous ? "Anonymous" : recipe.authorName}
+          <strong>Author:</strong> {recipe.isAnonymous ? 'Anonymous' : recipe.authorName}
         </p>
       )}
     </article>

@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { collection, getFirestore, getDocs } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { collection, getFirestore, getDocs } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,14 +19,14 @@ export const db = getFirestore(app);
 
 export const storage = getStorage(app);
 
-export const usersCollectionRef = collection(db,"users");
-export const recipesCollectionRef = collection(db, "recipes");
-export const categoriesCollectionRef = collection(db, "categories");
-export const difficultiesCollectionRef = collection(db,"difficulties");
-export const servingsCollectionRef = collection(db,"servings");
-export const cuisinesCollectionRef = collection(db,"cuisines");
+export const usersCollectionRef = collection(db, 'users');
+export const recipesCollectionRef = collection(db, 'recipes');
+export const categoriesCollectionRef = collection(db, 'categories');
+export const difficultiesCollectionRef = collection(db, 'difficulties');
+export const servingsCollectionRef = collection(db, 'servings');
+export const cuisinesCollectionRef = collection(db, 'cuisines');
 
 export async function getStaticOptions<T>(collectionName: string): Promise<T[]> {
   const snapshot = await getDocs(collection(db, collectionName));
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as T));
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as T);
 }

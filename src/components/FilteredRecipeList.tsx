@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { getFilteredSortedRecipesFromParams } from "@/app/actions/getFilteredSortedRecipesFromParams";
-import { RecipeWithID } from "@/types";
-import RecipeList from "./RecipeList";
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { getFilteredSortedRecipesFromParams } from '@/app/actions/getFilteredSortedRecipesFromParams';
+import { RecipeWithID } from '@/types';
+import RecipeList from './RecipeList';
 
 export default function FilteredRecipeList() {
   const searchParams = useSearchParams();
@@ -22,10 +22,5 @@ export default function FilteredRecipeList() {
     fetchRecipes();
   }, [searchParams]);
 
-  return (
-    <RecipeList
-      recipes={recipes}
-      loading={loading}
-    />
-  );
+  return <RecipeList recipes={recipes} loading={loading} />;
 }

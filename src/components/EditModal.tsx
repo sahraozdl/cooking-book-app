@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { ReactNode } from "react";
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import React, { ReactNode } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 interface EditModalProps {
   isOpen: boolean;
@@ -10,12 +10,7 @@ interface EditModalProps {
   children: ReactNode;
 }
 
-export default function EditModal({
-  isOpen,
-  onClose,
-  title = "Edit",
-  children,
-}: EditModalProps) {
+export default function EditModal({ isOpen, onClose, title = 'Edit', children }: EditModalProps) {
   return (
     <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-50">
       <div className="fixed inset-0 bg-black bg-opacity-30" aria-hidden="true" />
@@ -34,6 +29,7 @@ export default function EditModal({
           <DialogTitle className="text-xl font-semibold text-orange-600 mb-4">
             {title}
           </DialogTitle>
+
 
           {children}
         </DialogPanel>

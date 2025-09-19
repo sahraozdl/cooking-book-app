@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import {
   followUser,
   unfollowUser,
   getUserById,
   getUserFollowers,
   getUserFollowing,
-} from "@/app/lib/firebase/firestoreUser";
-import { useUser } from "@/store/UserContext";
-import { UserTypes, RecipeWithID } from "@/types";
-import { getUserPublicRecipes } from "@/app/actions/firestoreRecipeActions";
-import RecipeList from "@/components/RecipeList";
-import PrimaryButton from "@/components/buttons/PrimaryButton";
+} from '@/app/lib/firebase/firestoreUser';
+import { useUser } from '@/store/UserContext';
+import { UserTypes, RecipeWithID } from '@/types';
+import { getUserPublicRecipes } from '@/app/actions/firestoreRecipeActions';
+import RecipeList from '@/components/RecipeList';
+import PrimaryButton from '@/components/buttons/PrimaryButton';
 
 export default function UserProfilePage() {
   const { user } = useUser();
   const params = useParams();
-  const userId = typeof params?.userId === "string" ? params.userId : "";
+  const userId = typeof params?.userId === 'string' ? params.userId : '';
 
   const [targetUser, setTargetUser] = useState<UserTypes | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -78,15 +78,13 @@ export default function UserProfilePage() {
         <div>
           {user && user.id !== userId && (
             <PrimaryButton onClick={handleFollowToggle}>
-              {isFollowing ? "Unfollow" : "Follow"}
+              {isFollowing ? 'Unfollow' : 'Follow'}
             </PrimaryButton>
           )}
         </div>
       </div>
       <div>
-        <h2 className="text-xl font-semibold mt-6">
-          Followers: {followers.length}
-        </h2>
+        <h2 className="text-xl font-semibold mt-6">Followers: {followers.length}</h2>
         <ul className="text-sm text-gray-700 list-disc list-inside">
           {followers.map((f) => (
             <li key={f.id}>{f.name}</li>
@@ -95,9 +93,7 @@ export default function UserProfilePage() {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold mt-6">
-          Following: {following.length}
-        </h2>
+        <h2 className="text-xl font-semibold mt-6">Following: {following.length}</h2>
         <ul className="text-sm text-gray-700 list-disc list-inside">
           {following.map((f) => (
             <li key={f.id}>{f.name}</li>
@@ -105,9 +101,7 @@ export default function UserProfilePage() {
         </ul>
       </div>
       <div>
-        <h2 className="text-xl font-semibold mb-2">
-          Recipes by {targetUser.name}
-        </h2>
+        <h2 className="text-xl font-semibold mb-2">Recipes by {targetUser.name}</h2>
         <RecipeList recipes={recipes} editable={false} />
       </div>
     </div>
