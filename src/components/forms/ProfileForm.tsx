@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useActionState } from "react";
 import { updateProfileAction } from "@/app/actions/updateProfileAction";
 import { UserTypes } from "@/types";
@@ -8,7 +8,7 @@ import { Field, Label, Input, Description } from "@headlessui/react";
 import PrimaryButton from "@/components/buttons/PrimaryButton";
 import SecondaryButton from "@/components/buttons/SecondaryButton";
 
-interface Props {
+export interface Props {
   user: UserTypes;
   onClose: () => void;
   onSuccess?: () => void;
@@ -27,6 +27,8 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
     initialState
   );
 
+  const [emailError, setEmailError] = useState("");
+
   useEffect(() => {
     if (state.success) {
       onSuccess?.();
@@ -34,8 +36,20 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
     }
   }, [state.success, onSuccess, onClose]);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setEmailError("");
+    const form = e.currentTarget;
+    const emailValue = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue)) {
+      e.preventDefault();
+      setEmailError("Invalid email");
+      return;
+    }
+  };
+
   return (
-    <form action={action} className="text-left max-w-xl mx-auto p-4 space-y-4">
+    <form role="form" action={action} onSubmit={handleSubmit} className="text-left max-w-xl mx-auto p-4 space-y-4">
       <input type="hidden" name="userId" value={user.id} />
 
       <Field className="flex flex-col gap-1">
@@ -72,14 +86,13 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
         <Description id="email-help" className="text-xs text-gray-500">
           Used for login and communication.
         </Description>
+        {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
       </Field>
 
       {state.message && (
         <p
           role="status"
-          className={`text-sm mt-1 ${
-            state.success ? "text-green-600" : "text-red-500"
-          }`}
+          className={`text-sm mt-1 ${state.success ? "text-green-600" : "text-red-500"}`}
         >
           {state.message}
         </p>
