@@ -19,6 +19,7 @@ export default function AuthForm() {
       await signInWithGoogle();
       router.push('/dashboard');
     } catch (err) {
+      console.error('Google Sign-In Error:', err);
       setError('Google Sign-In failed. Please try again.');
     }
   };
