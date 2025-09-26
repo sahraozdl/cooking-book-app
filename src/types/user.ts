@@ -6,7 +6,7 @@ export interface SearchUser {
 }
 
 export interface UserTypes {
-  id: string;
+  id?: string;
   name?: string;
   email?: string;
   password?: string;
