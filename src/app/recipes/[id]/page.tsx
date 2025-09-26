@@ -5,12 +5,12 @@ import { notFound } from 'next/navigation';
 import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
 import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
-interface RecipeDetailsPageProps {
-  params: { id: string };
+interface Params {
+  id: string;
 }
 
-export default async function RecipeDetailsPage({ params }: RecipeDetailsPageProps) {
-  const { id } = params;
+export default async function RecipeDetailsPage(props: { params: Params | Promise<Params> }) {
+  const { id } = await props.params;
 
   const recipeRef = doc(db, 'recipes', id);
   const recipeSnap = await getDoc(recipeRef);
