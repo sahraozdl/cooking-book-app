@@ -1,16 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "types": [
-      "jest",
-      "node",
-      "@testing-library/jest-dom"
-    ],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,9 +20,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -41,7 +31,5 @@
     "jest.d.ts",
     "babel.config.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
