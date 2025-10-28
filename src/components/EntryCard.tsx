@@ -91,7 +91,10 @@ export default function EntryCard({
   };
 
   return (
-    <div className="border rounded-xl p-4 shadow-sm bg-white text-gray-800">
+    <div
+      data-testid="entry-card"
+      className="border rounded-xl p-4 shadow-sm bg-white text-gray-800"
+    >
       <div className="flex flex-col sm:flex-row items-start gap-4">
         {entry.strMealThumb && (
           <Image
@@ -163,6 +166,7 @@ export default function EntryCard({
             <Link
               href={`/recipes/${entry.id}`}
               className="ml-auto text-orange-500 hover:underline text-sm"
+              data-testid="view-full-recipe-link"
             >
               View full recipe
             </Link>

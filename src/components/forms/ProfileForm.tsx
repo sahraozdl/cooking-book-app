@@ -7,6 +7,7 @@ import { UserTypes } from '@/types';
 import { Field, Label, Input, Description } from '@headlessui/react';
 import PrimaryButton from '@/components/buttons/PrimaryButton';
 import SecondaryButton from '@/components/buttons/SecondaryButton';
+import { isValidEmail } from '@/app/lib/utils/validateEmail';
 
 export interface Props {
   user: UserTypes;
@@ -40,8 +41,7 @@ export default function ProfileForm({ user, onClose, onSuccess }: Props) {
     setEmailError('');
     const form = e.currentTarget;
     const emailValue = (form.elements.namedItem('email') as HTMLInputElement).value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailValue)) {
+    if (!isValidEmail(emailValue)) {
       e.preventDefault();
       setEmailError('Invalid email');
       return;

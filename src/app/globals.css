@@ -3,8 +3,8 @@
 :root {
   --background: #fff8f1;
   --foreground: #3c2f2f;
-  --accent-orange: #f97316;
-  --accent-orange-dark: #e65000;
+  --accent-orange: #ff6a1a;
+  --accent-orange-dark: #7a2b00;
 }
 
 @theme inline {
@@ -19,7 +19,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --accent-orange: #ea580c;
+    --accent-orange: #de3b00;
   }
 }
 

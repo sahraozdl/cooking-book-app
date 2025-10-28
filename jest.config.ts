@@ -1,17 +1,31 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
-  preset: 'ts-jest', // use ts-jest to handle TS + TSX
-  testEnvironment: 'jsdom', // needed for React
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest', // transform TS & TSX files
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+      },
+    ],
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1', // handle "@/..." imports
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy', // mock CSS imports
+    '^@/(.*)$': '<rootDir>/src/$1',
+
+    '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
+    '\\.(css|scss|sass|png|jpg|jpeg|gif|svg)$': '<rootDir>/__mocks__/fileMock.ts',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/.next/', '/tests/playwright/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/tests/playwright/',
+  ],
+
+  transformIgnorePatterns: ['<rootDir>/node_modules/'],
+
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
 
