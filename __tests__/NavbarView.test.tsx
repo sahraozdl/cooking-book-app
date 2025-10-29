@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { NavbarView } from '@/components/NavbarView';
 import '@testing-library/jest-dom';
@@ -8,7 +7,7 @@ describe('NavbarView', () => {
   const mockLogout = jest.fn();
   const mockToggleMenu = jest.fn();
 
-  it('shows Login link when user is not logged in', () => {
+  it('shows only Login link when user is not logged in', () => {
     render(
       <NavbarView
         user={null}
@@ -19,8 +18,11 @@ describe('NavbarView', () => {
     );
 
     expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('Categories')).toBeInTheDocument();
     expect(screen.getByText('Login')).toBeInTheDocument();
     expect(screen.queryByText('Profile')).not.toBeInTheDocument();
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();  
+    expect(screen.queryByText('New Recipe')).not.toBeInTheDocument(); 
     expect(screen.queryByText('Logout')).not.toBeInTheDocument();
   });
 
