@@ -39,4 +39,4 @@ jobs:
 
       # Run Playwright E2E tests
       - name: Run Playwright E2E tests
-        run: npx playwright test tests/playwright --reporter=list
+        run: npm run test:e2e
