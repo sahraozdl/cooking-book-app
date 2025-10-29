@@ -5,11 +5,8 @@ import { notFound } from 'next/navigation';
 import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
 import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
-interface RecipeDetailsPageProps {
-  params: { id: string };
-}
 
-export default async function RecipeDetailsPage({ params }: RecipeDetailsPageProps) {
+export default async function RecipeDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const recipeRef = doc(db, 'recipes', id);
