@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: 'www.themealdb.com',
         pathname: '/images/**',
       },
+      {
+    protocol: 'https',
+    hostname: 'another-cdn.com',
+    pathname: '/**',
+  },
     ],
   },
 };

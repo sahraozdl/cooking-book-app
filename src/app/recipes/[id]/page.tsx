@@ -5,8 +5,11 @@ import { notFound } from 'next/navigation';
 import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
 import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
+interface PageProps {
+  params: { id: string };
+}
 
-export default async function RecipeDetailsPage({ params }: { params: { id: string } }) {
+export default async function RecipeDetailsPage({ params }: PageProps) {
   const { id } = params;
 
   const recipeRef = doc(db, 'recipes', id);
@@ -45,10 +48,10 @@ export default async function RecipeDetailsPage({ params }: { params: { id: stri
   }
 
   return (
-    <article className="p-4 max-w-4xl mx-auto space-y-6 text-gray-800 ">
+    <article className="p-4 max-w-4xl mx-auto space-y-6 text-gray-800">
       <h1 className="text-2xl sm:text-3xl font-bold break-words">{recipe.strMeal}</h1>
 
-      <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 text-sm ">
+      <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 text-sm">
         {difficulty && (
           <p>
             <strong>Difficulty:</strong> {difficulty.name} ({difficulty.avgTime})
@@ -68,19 +71,19 @@ export default async function RecipeDetailsPage({ params }: { params: { id: stri
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row md:space-x-8 ">
-        <div className="w-full md:w-1/2 max-w-xs md:max-w-full mx-auto mb-2 md:mb-0 ">
+      <div className="flex flex-col md:flex-row md:space-x-8">
+        <div className="w-full md:w-1/2 max-w-xs md:max-w-full mx-auto mb-2 md:mb-0">
           {recipe.strMealThumb ? (
             <Image
               src={recipe.strMealThumb}
               alt={recipe.strMeal}
               width={300}
               height={300}
-              className="rounded object-cover "
+              className="rounded object-cover"
               priority
             />
           ) : (
-            <div className="bg-gray-200  rounded w-full aspect-square" />
+            <div className="bg-gray-200 rounded w-full aspect-square" />
           )}
         </div>
 
@@ -91,8 +94,8 @@ export default async function RecipeDetailsPage({ params }: { params: { id: stri
 
       {recipe.ingredients?.length > 0 && (
         <section>
-          <h2 className="font-semibold mt-6 mb-2 text-lg ">Ingredients:</h2>
-          <ul className="list-disc list-inside ml-5 space-y-1 text-sm sm:text-base ">
+          <h2 className="font-semibold mt-6 mb-2 text-lg">Ingredients:</h2>
+          <ul className="list-disc list-inside ml-5 space-y-1 text-sm sm:text-base">
             {recipe.ingredients.map((ing, idx) => (
               <li key={idx}>
                 {ing.strIngredient} — {ing.strMeasure}

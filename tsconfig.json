@@ -1,8 +1,16 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "types": ["jest", "node", "@testing-library/jest-dom"],
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/jest-dom"
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,7 +28,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
@@ -31,5 +41,8 @@
     "jest.d.ts",
     "babel.config.js"
   ],
-  "exclude": ["node_modules", "tests/playwright"]
+  "exclude": [
+    "node_modules",
+    "tests/playwright"
+  ]
 }
