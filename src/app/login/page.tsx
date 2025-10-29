@@ -1,16 +1,18 @@
 'use client';
 import { useState } from 'react';
-import { signUpUser, signInUser, signInWithGoogle } from '@/app/lib/firebase/auth';
+import { signUpUser, signInUser, signInWithGoogle, resetPassword } from '@/app/lib/firebase/auth';
 import { useRouter } from 'next/navigation';
 
 export default function AuthForm() {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(true);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const toggleForm = () => {
     setIsSignUp((prev) => !prev);
     setError('');
+    setSuccess('');
   };
 
   const handleGoogleSignIn = async () => {
@@ -24,10 +26,33 @@ export default function AuthForm() {
     }
   };
 
+  const handleResetPassword = async () => {
+    setError('');
+    setSuccess('');
+    const emailInput = (document.getElementById('email') as HTMLInputElement)?.value;
+    if (!emailInput) {
+      setError('Please enter your email to reset password.');
+      return;
+    }
+
+    try {
+      const response = await resetPassword(emailInput);
+      if (response.errors) {
+        setError(response.errors.email?.[0] ?? 'Failed to send reset email.');
+      } else {
+        setSuccess(response.message);
+      }
+    } catch (err) {
+      console.error('Reset Password Error:', err);
+      setError('Failed to send reset email. Please try again.');
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
     setError('');
+    setSuccess('');
 
     try {
       if (isSignUp) {
@@ -62,6 +87,7 @@ export default function AuthForm() {
           </h2>
 
           {error && <p className="text-red-600 whitespace-pre-line mb-4">{error}</p>}
+          {success && <p className="text-green-600 mb-4">{success}</p>}
 
           {isSignUp && (
             <div className="mb-4">
@@ -97,16 +123,18 @@ export default function AuthForm() {
             />
           </div>
 
-          <button type="submit" className="w-full py-2 bg-gray-800 text-white rounded">
+          {!isSignUp && (
+            <p
+              className="text-sm text-blue-600 underline mb-4 cursor-pointer"
+              onClick={handleResetPassword}
+            >
+              Forgot Password?
+            </p>
+          )}
+
+          <button type="submit" className="w-full py-2 bg-gray-800 text-white rounded mb-4">
             {isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
-
-          <p className="mt-4 text-center text-sm text-gray-700">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button type="button" onClick={toggleForm} className="text-blue-600 underline">
-              {isSignUp ? 'Sign In' : 'Sign Up'}
-            </button>
-          </p>
 
           <button
             type="button"
@@ -115,6 +143,12 @@ export default function AuthForm() {
           >
             Continue with Google
           </button>
+          <p className="mt-4 text-center text-sm text-gray-700">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+            <button type="button" onClick={toggleForm} className="text-blue-600 underline">
+              {isSignUp ? 'Sign In' : 'Sign Up'}
+            </button>
+          </p>
         </form>
       </div>
     </div>

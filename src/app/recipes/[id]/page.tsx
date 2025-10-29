@@ -27,18 +27,13 @@ export default async function RecipeDetailsPage({ params }: PageProps) {
   const difficultyId = getId(recipe.difficultyId);
   if (difficultyId) {
     const diffSnap = await getDoc(doc(db, 'difficulties', difficultyId));
-    if (diffSnap.exists()) {
-      difficulty = { id: diffSnap.id, ...diffSnap.data() } as Difficulty;
-    }
+    if (diffSnap.exists()) difficulty = { id: diffSnap.id, ...diffSnap.data() } as Difficulty;
   }
-
   let cuisine: Cuisine | null = null;
   const cuisineId = getId(recipe.cuisineId);
   if (cuisineId) {
     const cuisineSnap = await getDoc(doc(db, 'cuisines', cuisineId));
-    if (cuisineSnap.exists()) {
-      cuisine = { id: cuisineSnap.id, ...cuisineSnap.data() } as Cuisine;
-    }
+    if (cuisineSnap.exists()) cuisine = { id: cuisineSnap.id, ...cuisineSnap.data() } as Cuisine;
   }
 
   let categories: Category[] = [];

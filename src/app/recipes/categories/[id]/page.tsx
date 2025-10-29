@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/app/lib/firebase/config';
 import { RecipeWithID } from '@/types';
 import EntryCard from '@/components/EntryCard';
 
-interface CategoryRecipesPageProps {
-  params: { id: string };
-}
-export default async function CategoryRecipesPage({ params }: CategoryRecipesPageProps) {
-  const { id: categoryId } = params;
+export default async function CategoryRecipesPage(props: any) {
+  const categoryId: string = props.params?.id;
+
+  if (!categoryId) return <p>Category not found.</p>;
 
   const recipesQuery = query(
     collection(db, 'recipes'),

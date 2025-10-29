@@ -4,6 +4,7 @@ import {
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth, db } from './config';
 import { getDoc, doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -115,5 +116,31 @@ export async function signInWithGoogle() {
   } catch (error) {
     console.error('Google sign-in failed:', error);
     throw error;
+  }
+}
+export async function resetPassword(email: string) {
+  if (!email) {
+    throw new Error('Email is required to reset password.');
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return { message: 'Password reset email sent. Please check your inbox.' };
+  } catch (error: unknown) {
+    console.error('Failed to send password reset email:', error);
+
+    let message = 'An error occurred while sending reset email.';
+    if (typeof error === 'object' && error !== null && 'code' in error) {
+      switch ((error as { code?: string }).code) {
+        case 'auth/user-not-found':
+          message = 'No user found with this email.';
+          break;
+        case 'auth/invalid-email':
+          message = 'The email address is invalid.';
+          break;
+      }
+    }
+
+    return { errors: { email: [message] } };
   }
 }
