@@ -5,12 +5,10 @@ import { notFound } from 'next/navigation';
 import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
 import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
-interface PageProps {
-  params: { id: string };
-}
-
-export default async function RecipeDetailsPage({ params }: PageProps) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function RecipeDetailsPage({ params }:any) {
+  // Unwrap params safely
+  const { id } = await params as { id: string };
 
   const recipeRef = doc(db, 'recipes', id);
   const recipeSnap = await getDoc(recipeRef);
