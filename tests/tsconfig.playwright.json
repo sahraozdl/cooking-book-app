@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "module": "esnext",
+    "target": "esnext"
+  },
+  "include": ["./playwright/**/*.ts", "./playwright/**/*.tsx"]
+}

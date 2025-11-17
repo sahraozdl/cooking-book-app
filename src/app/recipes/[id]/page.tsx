@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/app/lib/firebase/config';
 import Image from 'next/image';
@@ -6,10 +5,10 @@ import { notFound } from 'next/navigation';
 import { Category, Cuisine, Difficulty, RecipeWithID } from '@/types';
 import { getCategoriesByIds } from '@/app/actions/firestoreRecipeActions';
 
-export default async function RecipeDetailsPage(props: any) {
-  const id: string = props.params?.id;
-
-  if (!id) return notFound();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function RecipeDetailsPage({ params }:any) {
+  // Unwrap params safely
+  const { id } = await params as { id: string };
 
   const recipeRef = doc(db, 'recipes', id);
   const recipeSnap = await getDoc(recipeRef);

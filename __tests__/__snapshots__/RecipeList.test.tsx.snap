@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`RecipeList component matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="space-y-4"
+  >
+    <div
+      data-testid="entry-card"
+    >
+      Pizza
+    </div>
+    <div
+      data-testid="entry-card"
+    >
+      Pasta
+    </div>
+  </div>
+</DocumentFragment>
+`;

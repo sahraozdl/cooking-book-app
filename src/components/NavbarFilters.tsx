@@ -15,7 +15,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 export interface FilterOption {
   id: string;
-  name?: string;
+  name: string;
 }
 
 export interface NavbarFiltersProps {
@@ -94,10 +94,13 @@ export default function NavbarFilters({
     selected: string[],
     setSelected: (val: string[]) => void
   ) => (
-    <Disclosure as="div" className="border-b border-gray-300 py-2">
+    <Disclosure as="button" className="border-b border-gray-300 py-2">
       {({ open }) => (
         <>
-          <DisclosureButton className="flex w-full justify-between text-sm font-medium text-gray-800 ">
+          <DisclosureButton
+            data-testid={`${title}`}
+            className="border-red border flex w-full justify-between text-sm font-medium text-gray-800 "
+          >
             <span>{title}</span>
             <ArrowDownIcon
               className={classNames(
@@ -108,15 +111,22 @@ export default function NavbarFilters({
           </DisclosureButton>
           <DisclosurePanel className="mt-2 space-y-2 max-h-48 overflow-auto">
             {options.map((opt) => (
-              <label key={opt.id} className="flex items-center space-x-2">
+              <div key={opt.id} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
+                  id={`filter-${opt.id}`}
+                  data-testid={`filter-${opt.id}`}
                   checked={selected.includes(opt.id)}
                   onChange={() => toggleValue(opt.id, setSelected, selected)}
                   className="accent-orange-500"
                 />
-                <span className="text-sm text-gray-700 ">{opt.name}</span>
-              </label>
+                <label
+                  htmlFor={`filter-${opt.id}`}
+                  className="text-sm text-gray-700 cursor-pointer"
+                >
+                  {opt.name}
+                </label>
+              </div>
             ))}
           </DisclosurePanel>
         </>
@@ -125,7 +135,10 @@ export default function NavbarFilters({
   );
 
   return (
-    <div className="w-full max-w-xs md:max-w-none md:w-64 p-2 bg-orange-50 rounded-md shadow-sm">
+    <div
+      data-testid="navbar-filters"
+      className="w-full max-w-xs md:max-w-none md:w-64 p-2 bg-orange-50 rounded-md shadow-sm"
+    >
       <Menu as="div" className="relative text-left w-full">
         <div>
           <MenuButton className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-red-900 bg-orange-300 rounded-md hover:bg-orange-400 focus:outline-none focus:ring focus:ring-orange-500 focus:ring-offset-2 cursor-pointer">
@@ -150,28 +163,31 @@ export default function NavbarFilters({
                 Clear
               </button>
             </div>
-
-            {renderCheckboxGroup(
-              'Categories',
-              categories,
-              selectedCategories,
-              setSelectedCategories
-            )}
-            {renderCheckboxGroup('Cuisines', cuisines, selectedCuisines, setSelectedCuisines)}
-            {renderCheckboxGroup(
-              'Difficulties',
-              difficulties,
-              selectedDifficulties,
-              setSelectedDifficulties
-            )}
-            {renderCheckboxGroup('Servings', servings, selectedServings, setSelectedServings)}
-
+            <div className="flex flex-col border-b border-gray-300">
+              {renderCheckboxGroup(
+                'Categories',
+                categories,
+                selectedCategories,
+                setSelectedCategories
+              )}
+              {renderCheckboxGroup('Cuisines', cuisines, selectedCuisines, setSelectedCuisines)}
+              {renderCheckboxGroup(
+                'Difficulties',
+                difficulties,
+                selectedDifficulties,
+                setSelectedDifficulties
+              )}
+              {renderCheckboxGroup('Servings', servings, selectedServings, setSelectedServings)}
+            </div>
             <div className="pt-2">
-              <label className="block text-sm font-medium text-gray-700 ">Sort by</label>
+              <label htmlFor="sort-select" className="block text-sm font-medium text-gray-700">
+                Sort by
+              </label>
               <select
+                id="sort-select"
                 value={selectedSort}
                 onChange={(e) => setSelectedSort(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 bg-white  text-gray-900 py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                className="mt-1 block w-full rounded-md border-gray-300 bg-white text-gray-900 py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
