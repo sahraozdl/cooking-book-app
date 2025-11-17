@@ -1,4 +1,4 @@
-import { NextConfig } from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
@@ -9,10 +9,10 @@ const nextConfig: NextConfig = {
         pathname: '/images/**',
       },
       {
-    protocol: 'https',
-    hostname: 'another-cdn.com',
-    pathname: '/**',
-  },
+        protocol: 'https',
+        hostname: 'cdn.loveandlemons.com',
+        pathname: '/**',
+      },
     ],
   },
 };
